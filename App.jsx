@@ -55,7 +55,10 @@ setMetalReply('ميتال بيكتب...')
 playSound('typing')
 // هنا بتكلم API بتاعي
 try {
-const res = await fetch('/api/metal', {
+const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/metal`, {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({msg: metalMsg})
 });
 // صفحة منشئ التطبيقات والألعاب
 if(page==='appBuilder') return (
