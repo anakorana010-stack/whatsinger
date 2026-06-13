@@ -1,1 +1,8 @@
-document.getElementById('root').innerHTML = '<h1>أنا نجحت يا دنيا 🔥</h1>';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+ReactDOM.createRoot(document.getElementById('root')).render(
+<React.StrictMode>
+<App />
+</App>
+)
