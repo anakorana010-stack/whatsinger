@@ -1,10 +1,1 @@
-import React, { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.jsx';
-const rootElement = document.getElementById('root');
-const root = createRoot(rootElement);
-root.render(
-<StrictMode>
-<App />
-</StrictMode>
-);
+document.getElementById('root').innerHTML = '<h1>أنا نجحت يا دنيا 🔥</h1>';
