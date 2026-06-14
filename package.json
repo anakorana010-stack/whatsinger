@@ -1,6 +1,5 @@
 {"name": "whatsinger",
 "private": true,
-"homepage": "https://anakorana010-stack.github.io/whatsinger/",
 "version": "0.0.1",
 "type": "module",
 "scripts": {
