@@ -430,4 +430,3 @@ modalContent:{padding:20,borderRadius:12,border:'3px solid',width:'90%',maxWidth
 transBtn:{background:'transparent',border:'none',color:'#000',textDecoration:'underline',cursor:'pointer'}
 }
 }
-}
