@@ -83,7 +83,7 @@ title="preview"
 </div>
 </div>
 )
-const res = await fetch('/api/metal', {
+const apiUrl = '/whatsinger/api/metal';
 method: 'POST',
 headers: {'Content-Type': 
 'application/json'},
