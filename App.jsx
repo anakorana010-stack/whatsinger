@@ -255,7 +255,7 @@ mediaRecorder.ondataavailable = e => audioChunks.push(e.data)
 mediaRecorder.onstop = async () => {
 const blob = new Blob(audioChunks, { type: 'audio/webm' })
 const fileName = `${user.id}-${Date.now()}.webm`
-await supabase.storage.from('voice-messages').upload(fileName, blob)
+playSound('goldDrop'); // بدل success
 const { data } = supabase.storage.from('voice-messages').getPublicUrl(fileName)
 setMessages(prev => [...prev, {
 id:Date.now(), 
