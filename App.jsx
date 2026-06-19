@@ -263,7 +263,7 @@ text:data.publicUrl,
 type:'audio', 
 time:new Date().toLocaleTimeString('ar-EG')
 }])
-playSound('success')
+playSound('goldDrop'); // بدل success
 }
 mediaRecorder.start()
 } catch(e) {
