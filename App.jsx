@@ -116,7 +116,6 @@ onChange={e=>setMetalMsg(e.target.value)}
 </div>
 )
 // الصفحة الرئيسية بعد الدخول
-if(page==='main') return (
 <div style={{...s.page, background:c.bg}}>
 <div style={s.header}>
 <h2>{activeTab==='chats'?'الدردشات':activeTab==='feed'?'الرئيسية':activeTab==='groups'?'المجموعات':'الحالات'}</h2>
