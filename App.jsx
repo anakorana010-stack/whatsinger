@@ -63,36 +63,6 @@ method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({msg: metalMsg})
 });
-// صفحة منشئ التطبيقات والألعاب
-if(page==='appBuilder') return (
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<button onClick={()=>setPage('settings')} style={s.backBtn}>رجوع</button>
-<h2 style={{color:c.text}}>منشئ التطبيقات والألعاب</h2>
-<button onClick={()=>updateAppCode(appCode)} style={s.backBtn}>تحديث</button>
-</div>
-<div style={{display:'flex', height:'85vh'}}>
-<textarea
-style={{width:'50%', background:'#000', color:'#0f0', padding:10, fontFamily:'monospace', border:'none', outline:'none'}}
-value={appCode}
-onChange={e=>setAppCode(e.target.value)}
-placeholder="اكتب كود HTML/CSS/JS هنا"
-/>
-<iframe
-style={{width:'50%', background:'#fff', border:'none'}}
-srcDoc={appCode}
-title="preview"
-/>
-</div>
-</div>
-)
-const apiUrl = '/whatsinger/api/metal';
-method: 'POST',
-headers: {'Content-Type': 
-'application/json'},
-body: JSON.stringify({msg: metalMsg})
-})
-const data = await res.json()
 setMetalReply(data.reply)
 playSound('send')
 } catch(err) {
