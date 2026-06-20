@@ -35,7 +35,7 @@ useEffect(() => {
 supabase.auth.getUser().then(({ data }) => {
 setUser(data.user)
 if(data.user) {
-setPage('main')
+setCurrentPage('main')
 loadUserData(data.user.id)
 if(data.user.id === ADMIN_ID) setIsAdmin(true)
 }
