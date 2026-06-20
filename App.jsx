@@ -130,7 +130,7 @@ if(page==='main') return (
 </div>
 <div style={s.bottomNav}>
 // صفحة الاعدادات
-if(currentPage==='settings') return (
+if(currentPage==='main') return (
 <div style={{...s.page, background:c.bg}}>
 <div style={s.header}>
 <button style={s.iconBtn} onClick={()=>setCurrentPage('main')}>←</button>
