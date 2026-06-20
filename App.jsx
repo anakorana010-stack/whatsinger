@@ -12,10 +12,6 @@ const [badgeStatus, setBadgeStatus] = useState('none')
 const [daysLeft, setDaysLeft] = useState(0)
 const [isRecording, setIsRecording] = useState(false)
 const [soundsEnabled, setSoundsEnabled] = useState(true)
-https://cdn.freesound.org/previews/131/131142_2337290-lq.mp3
-const [sounds, setSounds] = useState({
-mic: '', recording: '', typing: '', send:'',open:'', fail: '', success: '',
-call_icon: '', video_icon: '', ringtone:'',notif_in: '', notif_out: ''
 })
 const [isAdmin, setIsAdmin] = useState(false)
 const [appCode, setAppCode] = useState('<h1>مرحبا</h1>')
