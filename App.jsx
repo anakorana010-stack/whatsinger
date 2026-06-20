@@ -160,7 +160,6 @@ if(currentPage==='privacy') return (
 <button style={s.btn} onClick={()=>{if(hackerCode==='HACKER999') alert('تم تفعيل الحماية'); else alert('كود غلط')}}>تفعيل الحماية</button>
 <p style={{color:c.main, fontSize:12, marginTop:20}}>كود البنات: 159753 | كود الهكر: HACKER999</p>
 </div>
-</div>
 <button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>
 🏠<br/>الرئيسية
 </button>
