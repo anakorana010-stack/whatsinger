@@ -128,8 +128,6 @@ onChange={e=>setMetalMsg(e.target.value)}
 {activeTab==='story' && <p style={{color:'#fff', textAlign:'center'}}>مفيش حالات لسه</p>}
 </div>
 <div style={s.bottomNav}>
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
 <button style={s.iconBtn} onClick={()=>setCurrentPage('main')}>←</button>
 <h2 style={{color:c.main}}>الاعدادات</h2>
 </div>
