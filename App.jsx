@@ -115,30 +115,30 @@ onChange={e=>setMetalMsg(e.target.value)}
 </div>
 </div>
 )
-// الصفحة الرئيسية بعد الدخول
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<h2>{activeTab==='chats'?'الدردشات':activeTab==='feed'?'الرئيسية':activeTab==='groups'?'المجموعات':'الحالات'}</h2>
-<div onClick={()=>setCurrentPage('settings')}>⚙️</div>
-</div>
-<div style={s.content}>
-{activeTab==='chats' && <p style={{color:'#fff', textAlign:'center'}}>مفيش محادثات لسه</p>}
-{activeTab==='feed' && <p style={{color:'#fff', textAlign:'center'}}>مفيش منشورات لسه</p>}
-{activeTab==='groups' && <p style={{color:'#fff', textAlign:'center'}}>مفيش مجموعات لسه</p>}
-{activeTab==='story' && <p style={{color:'#fff', textAlign:'center'}}>مفيش حالات لسه</p>}
-</div>
-<div style={s.bottomNav}>
-<button style={s.iconBtn} onClick={()=>setCurrentPage('main')}>←</button>
-<h2 style={{color:c.main}}>الاعدادات</h2>
-</div>
-<div style={s.content}>
-<button style={s.btn} onClick={()=>setCurrentPage('profile')}>الملف الشخصي</button>
-<button style={s.btn} onClick={()=>setCurrentPage('privacy')}>الخصوصية والامان</button>
-<button style={s.btn} onClick={()=>setCurrentPage('sounds')}>الاصوات</button>
-<button style={s.btnOutline} onClick={()=>supabase.auth.signOut()}>تسجيل خروج</button>
-</div>
-</div>
-)
+118 // الصفحة الرئيسية بعد الدخول
+119 if(currentPage==='main') return (
+120 <div style={{...s.page, background:c.bg}}>
+121 <div style={s.header}>
+122 <h2>{activeTab==='chats'?'الدردشات':activeTab==='feed'?'المنشورات':activeTab==='groups'?'المجموعات':'الحالات'}</h2>
+123 <div onClick={()=>setCurrentPage('settings')}>⚙️</div>
+124 </div>
+125 <div style={s.content}>
+126 {activeTab==='chats' && <p style={{color:'#fff', textAlign:'center'}}>مفيش محادثات لسه</p>}
+127 {activeTab==='feed' && <p style={{color:'#fff', textAlign:'center'}}>لسه مفيش منشورات</p>}
+128 {activeTab==='groups' && <p style={{color:'#fff', textAlign:'center'}}>مفيش مجموعات لسه</p>}
+129 {activeTab==='story' && <p style={{color:'#fff', textAlign:'center'}}>مفيش حالات لسه</p>}
+130 </div>
+131 <div style={s.bottomNav}>
+132 <button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>📰<br/>الرئيسية</button>
+133 <button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>💬<br/>الدردشات</button>
+134 <button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>👥<br/>المجموعات</button>
+135 <button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>⭐<br/>الحالات</button>
+136 </div>
+137 </div>
+138 ) // قفلنا return بتاع main
+139
+140 // صفحة الاعدادات
+141 if(currentPage==='settings') return (
 // صفحة الخصوصية والامان - فيها كود البنات وضد الهكر
 if(currentPage==='privacy') return (
 <div style={{...s.page, background:c.bg}}>
