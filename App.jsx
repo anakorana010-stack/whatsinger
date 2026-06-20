@@ -12,6 +12,7 @@ const [badgeStatus, setBadgeStatus] = useState('none')
 const [daysLeft, setDaysLeft] = useState(0)
 const [isRecording, setIsRecording] = useState(false)
 const [soundsEnabled, setSoundsEnabled] = useState(true)
+const [sounds, setSounds] = useState({
 })
 const [isAdmin, setIsAdmin] = useState(false)
 const [appCode, setAppCode] = useState('<h1>مرحبا</h1>')
@@ -26,7 +27,7 @@ let mediaRecorder = null
 let audioChunks = []
 const ADMIN_ID = 'ضع_هنا_user_id_بتاعك'
 useEffect(() => {
-const [sounds, setSounds] = useState({
+
 mic: 'https://cdn.freesound.org/previews/131/131142_2337290-lq.mp3',
 vinyl: 'https://cdn.freesound.org/previews/344/344288_5121236-lq.mp3',
 goldDrop: 'https://cdn.freesound.org/previews/476/476178_9492730-lq.mp3',
