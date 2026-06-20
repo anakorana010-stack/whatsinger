@@ -144,6 +144,23 @@ if(currentPage==='settings') return (
 </div>
 </div>
 )
+// صفحة الخصوصية والامان - فيها كود البنات وضد الهكر
+if(currentPage==='privacy') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<button style={s.iconBtn} onClick={()=>setCurrentPage('settings')}>←</button>
+<h2 style={{color:c.main}}>الخصوصية والامان</h2>
+</div>
+<div style={s.content}>
+<h3 style={{color:c.main}}>🔐 كود دخول البنات الخاص</h3>
+<input style={s.input} placeholder="اكتب كود البنت" value={girlCode} onChange={e=>setGirlCode(e.target.value)} />
+<button style={s.btn} onClick={()=>{if(girlCode==='159753') alert('دخول مسموح للبنات'); else alert('كود غلط')}}>دخول</button>
+<h3 style={{color:c.main, marginTop:30}}>🛡️ الامان ضد الهكر</h3>
+<input style={s.input} placeholder="كود الهكر السري" value={hackerCode} onChange={e=>setHackerCode(e.target.value)} />
+<button style={s.btn} onClick={()=>{if(hackerCode==='HACKER999') alert('تم تفعيل الحماية'); else alert('كود غلط')}}>تفعيل الحماية</button>
+<p style={{color:c.main, fontSize:12, marginTop:20}}>كود البنات: 159753 | كود الهكر: HACKER999</p>
+</div>
+</div>
 <button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>
 🏠<br/>الرئيسية
 </button>
