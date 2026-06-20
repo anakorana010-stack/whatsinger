@@ -120,7 +120,7 @@ if(page==='main') return (
 <div style={{...s.page, background:c.bg}}>
 <div style={s.header}>
 <h2>{activeTab==='chats'?'الدردشات':activeTab==='feed'?'الرئيسية':activeTab==='groups'?'المجموعات':'الحالات'}</h2>
-<div onClick={()=>setPage('settings')}>⚙️</div>
+<div onClick={()=>setCurrentPage('settings')}>⚙️</div>
 </div>
 <div style={s.content}>
 {activeTab==='chats' && <p style={{color:'#fff', textAlign:'center'}}>مفيش محادثات لسه</p>}
@@ -129,6 +129,21 @@ if(page==='main') return (
 {activeTab==='story' && <p style={{color:'#fff', textAlign:'center'}}>مفيش حالات لسه</p>}
 </div>
 <div style={s.bottomNav}>
+// صفحة الاعدادات
+if(currentPage==='settings') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<button style={s.iconBtn} onClick={()=>setCurrentPage('main')}>←</button>
+<h2 style={{color:c.main}}>الاعدادات</h2>
+</div>
+<div style={s.content}>
+<button style={s.btn} onClick={()=>setCurrentPage('profile')}>الملف الشخصي</button>
+<button style={s.btn} onClick={()=>setCurrentPage('privacy')}>الخصوصية والامان</button>
+<button style={s.btn} onClick={()=>setCurrentPage('sounds')}>الاصوات</button>
+<button style={s.btnOutline} onClick={()=>supabase.auth.signOut()}>تسجيل خروج</button>
+</div>
+</div>
+)
 <button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>
 🏠<br/>الرئيسية
 </button>
