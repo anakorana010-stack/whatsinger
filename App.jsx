@@ -115,39 +115,74 @@ onChange={e=>setMetalMsg(e.target.value)}
 </div>
 </div>
 )
-// الصفحة الرئيسية بعد الدخول
-if(currentPage==='main') return (
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<h2>{activeTab==='chats'?'الدردشات':activeTab==='feed'?'المنشورات':activeTab==='groups'?'المجموعات':'الحالات'}</h2>
+// الصفحة الرئيسية بعد الدخول - سطر 118
+if(currentPage==='main'){
+const isRoyalQueen = false; // false = رجالي، true = حريمي
+return (
+<div style={{background:'#0b0f1a', minHeight:'100vh', color:'#fff', paddingBottom:70}}>
+<div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px', borderBottom:'2px solid #FFD700'}}>
+<h2 style={{margin:0, color:'#FFD700', fontSize:22, fontWeight:'bold'}}>👑 Whatsinger</h2>
 <div onClick={()=>setCurrentPage('settings')} style={{cursor:'pointer', fontSize:24}}>⚙️</div>
 </div>
-<div style={s.content}>
-{activeTab==='chats' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>مفيش محادثات لسه</p>}
-{activeTab==='feed' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>لسه مفيش منشورات</p>}
-{activeTab==='groups' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>مفيش مجموعات لسه</p>}
-{activeTab==='story' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>مفيش حالات لسه</p>}
+<div style={{padding:'16px'}}>
+<h3 style={{color:'#FFD700'}}>مرحباً يا {isRoyalQueen ? 'ملكة' : 'ملك'} 👑</h3>
+<p>القصر الدهبي بتاعك جاهز</p>
 </div>
-<div style={s.bottomNav}>
-<button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>📰<br/>الرئيسية</button>
-<button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>💬<br/>الدردشات</button>
-<button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>👥<br/>المجموعات</button>
-<button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>⭐<br/>الحالات</button>
+{/* الاعدادات - اوعى تمسح دي سطر 150 */}
+<div style={{marginTop:20}}>
+<button style={{background:'#ff3b30', color:'#fff', border:'none', padding:'10px 20px', borderRadius:8, cursor:'pointer'}}>خروج</button>
+</div>
+{/* الشريط السفلي التاج الملكي */}
+<div style={isRoyalQueen ? s.bottomNavQueen : s.bottomNavKing}>
+<button style={currentPage==='chats' ? s.navActive : s.navBtn}>💬 chats</button>
+<button style={currentPage==='feed' ? s.navActive : s.navBtn}>📰 feed</button>
+<button style={currentPage==='groups' ? s.navActive : s.navBtn}>👥 groups</button>
+<button style={currentPage==='story' ? s.navActive : s.navBtn}>📸 story</button>
 </div>
 </div>
-) // قفلنا return بتاع main
-// صفحة الاعدادات
-if(currentPage==='settings') return (
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<button style={s.iconBtn} onClick={()=>setCurrentPage('main')}>←</button>
-<h2 style={{color:c.main}}>الاعدادات</h2>
-</div>
-<div style={s.content}>
-<button style={s.btn} onClick={()=>setCurrentPage('profile')}>الملف الشخصي</button>
-<button style={s.btn} onClick={()=>setCurrentPage('privacy')}>الخصوصية والامان</button>
-<button style={s.btn} onClick={()=>setCurrentPage('sounds')}>الاصوات</button>
-<button style={{...s.btn, background:'#ff3b30'}} onClick={()=>{setCurrentPage('login'); setUser(null)}}>تسجيل خروج</button>
+)
+}
+// ستايلات القصر الملكي - حط ده تحت الـ return على طول
+const s = {
+bottomNavKing: {
+position: 'fixed',
+bottom: 0,
+width: '100%',
+display: 'flex',
+justifyContent: 'space-around',
+background: 'linear-gradient(180deg, #FFD700 0%, #FFA500 100%)',
+borderTop: '3px solid #B8860B',
+padding: '8px 0',
+boxShadow: '0 -4px 20px rgba(255, 215, 0, 0.5)'
+},
+bottomNavQueen: {
+position: 'fixed',
+bottom: 0,
+width: '100%',
+display: 'flex',
+justifyContent: 'space-around',
+background: 'linear-gradient(180deg, #FFB6C1 0%, #FF69B4 100%)',
+borderTop: '3px solid #FF1493',
+padding: '8px 0',
+boxShadow: '0 -4px 20px rgba(255, 182, 193, 0.5)'
+},
+navBtn: {
+background: 'transparent',
+border: 'none',
+color: '#8B4513',
+fontSize: '12px',
+fontWeight: 'bold',
+padding: '6px 12px',
+borderRadius: '12px',
+cursor: 'pointer'
+},
+navActive: {
+background: 'linear-gradient(180deg, #FFF8DC 0%, #FFD700 100%)',
+color: '#000',
+boxShadow: '0 0 15px rgba(255, 215, 0, 0.8)',
+border: '2px solid #B8860B'
+}
+}
 </div>
 </div>
 ) // قفلنا return بتاع settings
