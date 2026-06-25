@@ -13,6 +13,7 @@ const [daysLeft, setDaysLeft] = useState(0)
 const [isRecording, setIsRecording] = useState(false)
 const [soundsEnabled, setSoundsEnabled] = useState(true)
 const [sounds, setSounds] = useState({
+goldDrop:new Audio('data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA'), // ترنجرجر
 mic: 'https://cdn.freesound.org/previews/131/131142_2337290-lq.mp3',
 vinyl: 'https://cdn.freesound.org/previews/344/344288_5121236-lq.mp3',
 goldDrop: 'https://cdn.freesound.org/previews/476/476178_9492730-lq.mp3',
@@ -266,6 +267,7 @@ setMessages([...messages, msg])
 setInput('')
 playSound('send')
 setTimeout(()=>messagesEndRef.current?.scrollIntoView({behavior:'smooth'}), 100)
+playSound('goldDrop') // ترنجرجرج 💥 السبيكة وقعت
 }
 const startAudioRecord = async () => {
 setIsRecording(true)
