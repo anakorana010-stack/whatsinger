@@ -448,7 +448,20 @@ btn:{width:'100%',padding:12,background:'#FFD700',border:'none',borderRadius:8,f
 btnOutline:{width:'100%',padding:12,background:'transparent',border:'2px solid #FFD700',borderRadius:8,color:'#FFD700',cursor:'pointer'},
 header:{display:'flex',alignItems:'center',padding:10,color:'#000',borderBottom:'3px solid'},
 m:{width:35,height:35,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:900,color:'#fff'},
-msg:{padding:12,borderRadius:14,maxWidth:'85%',border:'3px solid',fontWeight:700,color:'#000',boxShadow:'0 0 20px rgba(255,215,0,0.5)'},
+msg:{
+padding:14,
+borderRadius:20,
+maxWidth:'85%',
+fontWeight:700,
+color:'#000',
+// دهن السبيكة الدهب الملكي
+background:'linear-gradient(135deg, #FFD700 0% 20%, #FFA500 40% 60%, #FFD700 80% 100%)',
+border:'3px solid #B8860B',
+boxShadow:'0 0 25px rgba(255,215,0,0.8), inset 0 0 15px rgba(255,255,255,0.4)',
+textShadow:'0 1px 2px rgba(0,0,0,0.3)',
+position:'relative',
+overflow:'hidden'
+},
 inputBar:{position:'fixed',bottom:50,left:0,right:0,display:'flex',alignItems:'center',gap:10,padding:10,borderTop:'3px solid'},
 inputChat:{flex:1,padding:10,background:'#2A2A2A',border:'2px solid',borderRadius:20,color:'#FFD700',outline:'none'},
 iconBtn:{width:40,height:40,borderRadius:'50%',border:'none',cursor:'pointer'},
