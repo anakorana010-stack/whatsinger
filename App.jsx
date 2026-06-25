@@ -14,6 +14,7 @@ const [isRecording, setIsRecording] = useState(false)
 const [soundsEnabled, setSoundsEnabled] = useState(true)
 const [sounds, setSounds] = useState({
 goldDrop:new Audio('data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA'), // ترنجرجر
+eyeBlink:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA'), // بربش
 mic: 'https://cdn.freesound.org/previews/131/131142_2337290-lq.mp3',
 vinyl: 'https://cdn.freesound.org/previews/344/344288_5121236-lq.mp3',
 goldDrop: 'https://cdn.freesound.org/previews/476/476178_9492730-lq.mp3',
@@ -262,6 +263,8 @@ text:input,
 type:'text',
 time:new Date().toLocaleTimeString('ar-EG'),
 status:'sent'
+status: 'sent',
+onRead: () => { playSound('eyeBlink') } // العين تبربش لما تتقري
 }
 setMessages([...messages, msg])
 setInput('')
