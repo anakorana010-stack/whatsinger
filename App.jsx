@@ -1,3 +1,4 @@
+import CryptoJS from 'crypto-js' // قفل ملكي للرسايل
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 export default function App() {
@@ -266,6 +267,8 @@ status:'sent'
 status: 'sent',
 onRead: () => { playSound('eyeBlink') } // العين تبربش لما تتقري
 }
+const encryptedMsg = CryptoJS.AES.encrypt(msg.text, 'royal-key-2026').toString()
+msg.text = encryptedMsg // الرسالة متشفرة يا ملك
 setMessages([...messages, msg])
 setInput('')
 playSound('send')
