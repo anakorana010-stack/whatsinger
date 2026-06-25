@@ -115,56 +115,54 @@ onChange={e=>setMetalMsg(e.target.value)}
 </div>
 </div>
 )
-118 // الصفحة الرئيسية بعد الدخول
-119 if(currentPage==='main') return (
-120 <div style={{...s.page, background:c.bg}}>
-121 <div style={s.header}>
-122 <h2>{activeTab==='chats'?'الدردشات':activeTab==='feed'?'المنشورات':activeTab==='groups'?'المجموعات':'الحالات'}</h2>
-123 <div onClick={()=>setCurrentPage('settings')}>⚙️</div>
-124 </div>
-125 <div style={s.content}>
-126 {activeTab==='chats' && <p style={{color:'#fff', textAlign:'center'}}>مفيش محادثات لسه</p>}
-127 {activeTab==='feed' && <p style={{color:'#fff', textAlign:'center'}}>لسه مفيش منشورات</p>}
-128 {activeTab==='groups' && <p style={{color:'#fff', textAlign:'center'}}>مفيش مجموعات لسه</p>}
-129 {activeTab==='story' && <p style={{color:'#fff', textAlign:'center'}}>مفيش حالات لسه</p>}
-130 </div>
-131 <div style={s.bottomNav}>
-132 <button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>📰<br/>الرئيسية</button>
-133 <button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>💬<br/>الدردشات</button>
-134 <button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>👥<br/>المجموعات</button>
-135 <button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>⭐<br/>الحالات</button>
-136 </div>
-137 </div>
-138 ) // قفلنا return بتاع main
-139
-140 // صفحة الاعدادات
-141 if(currentPage==='settings') return (
-// صفحة الخصوصية والامان - فيها كود البنات وضد الهكر
+// الصفحة الرئيسية بعد الدخول
+if(currentPage==='main') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<h2>{activeTab==='chats'?'الدردشات':activeTab==='feed'?'المنشورات':activeTab==='groups'?'المجموعات':'الحالات'}</h2>
+<div onClick={()=>setCurrentPage('settings')} style={{cursor:'pointer', fontSize:24}}>⚙️</div>
+</div>
+<div style={s.content}>
+{activeTab==='chats' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>مفيش محادثات لسه</p>}
+{activeTab==='feed' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>لسه مفيش منشورات</p>}
+{activeTab==='groups' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>مفيش مجموعات لسه</p>}
+{activeTab==='story' && <p style={{color:'#fff', textAlign:'center', marginTop:50}}>مفيش حالات لسه</p>}
+</div>
+<div style={s.bottomNav}>
+<button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>📰<br/>الرئيسية</button>
+<button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>💬<br/>الدردشات</button>
+<button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>👥<br/>المجموعات</button>
+<button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>⭐<br/>الحالات</button>
+</div>
+</div>
+) // قفلنا return بتاع main
+// صفحة الاعدادات
+if(currentPage==='settings') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<button style={s.iconBtn} onClick={()=>setCurrentPage('main')}>←</button>
+<h2 style={{color:c.main}}>الاعدادات</h2>
+</div>
+<div style={s.content}>
+<button style={s.btn} onClick={()=>setCurrentPage('profile')}>الملف الشخصي</button>
+<button style={s.btn} onClick={()=>setCurrentPage('privacy')}>الخصوصية والامان</button>
+<button style={s.btn} onClick={()=>setCurrentPage('sounds')}>الاصوات</button>
+<button style={{...s.btn, background:'#ff3b30'}} onClick={()=>{setCurrentPage('login'); setUser(null)}}>تسجيل خروج</button>
+</div>
+</div>
+) // قفلنا return بتاع settings
+// صفحة الخصوصية - بعد ما settings قفلت
 if(currentPage==='privacy') return (
 <div style={{...s.page, background:c.bg}}>
 <div style={s.header}>
 <button style={s.iconBtn} onClick={()=>setCurrentPage('settings')}>←</button>
 <h2 style={{color:c.main}}>الخصوصية والامان</h2>
 </div>
-<div style={s.content}>
-<h3 style={{color:c.main}}>🔐 كود دخول البنات الخاص</h3>
-<input style={s.input} placeholder="اكتب كود البنت" value={girlCode} onChange={e=>setGirlCode(e.target.value)} />
-<button style={s.btn} onClick={()=>{if(girlCode==='159753') alert('دخول مسموح للبنات'); else alert('كود غلط')}}>دخول</button>
-<h3 style={{color:c.main, marginTop:30}}>🛡️ الامان ضد الهكر</h3>
-<input style={s.input} placeholder="كود الهكر السري" value={hackerCode} onChange={e=>setHackerCode(e.target.value)} />
-<button style={s.btn} onClick={()=>{if(hackerCode==='HACKER999') alert('تم تفعيل الحماية'); else alert('كود غلط')}}>تفعيل الحماية</button>
-<p style={{color:c.main, fontSize:12, marginTop:20}}>كود البنات: 159753 | كود الهكر: HACKER999</p>
+<div style={s.content}
+// هنا كود الاكواد بتاعتك سطر 150-156 من الصورة
 </div>
-<button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>
-🏠<br/>الرئيسية
-</button>
-<button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>
-💬<br/>الشات
-</button>
-<button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>
-👥<br/>المجموعات
-</button>
-<button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>
+</div>
+) // قفل privacy كدة مثلاً
 📸<br/>الاستورى
 </button>
 </div>
@@ -172,7 +170,7 @@ if(currentPage==='privacy') return (
 )
 // صفحة الشات داخل الصفحة الرئيسية
 const renderChats = () => (
-<>
+<
 <div style={s.messages}>
 <div style={s.dateSep}>الجمعة 1 مايو 2026</div>
 {messages.map(m=>(
