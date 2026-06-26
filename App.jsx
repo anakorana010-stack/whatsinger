@@ -16,6 +16,8 @@ const [soundsEnabled, setSoundsEnabled] = useState(true)
 const [sounds, setSounds] = useState({
 goldDrop:new Audio('data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA'), // ترنجرجر
 eyeBlink:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA'), // بربش
+eyeCry:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA'), // عياط واح
+eyeLaugh:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA'), // ضحكة ه
 mic: 'https://cdn.freesound.org/previews/131/131142_2337290-lq.mp3',
 vinyl: 'https://cdn.freesound.org/previews/344/344288_5121236-lq.mp3',
 goldDrop: 'https://cdn.freesound.org/previews/476/476178_9492730-lq.mp3',
@@ -265,8 +267,16 @@ type:'text',
 time:new Date().toLocaleTimeString('ar-EG'),
 status:'sent'
 status: 'sent',
+status: 'sending',
+onFail: () => { playSound('eyeCry') }, // موصلتش تعيط واح
+onSuccess: () => { playSound('eyeLaugh') } // وصلت تضحك ه
 onRead: () => { playSound('eyeBlink') } // العين تبربش لما تتقري
 }
+supabase.from('messages').insert(msg).then(() => {
+playSound('eyeLaugh') // وصلت = ضحكة ومسح دموع
+}).catch(() => {
+playSound('eyeCry') // فشلت = عياط
+})
 const encryptedMsg = CryptoJS.AES.encrypt(msg.text, 'royal-key-2026').toString()
 msg.text = encryptedMsg // الرسالة متشفرة يا ملك
 setMessages([...messages, msg])
