@@ -251,10 +251,10 @@ const renderChats = () => (
 {m.type==='audio' && <audio controls src={m.text} style={{width:'100%', marginTop:5}} />}
 <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:5, fontSize:12}}>
 <div style={{display:'flex', alignItems:'center', gap:4}}>
+{m.status === 'sending' && <span style={{color:'gray', fontSize:14}}>✓</span>}
 {m.status === 'sent' && <span style={{color:'gray', fontSize:14}}>✓</span>}
 {m.status === 'delivered' && <span style={{color:'#53bdeb', fontSize:14}}>✓</span>}
 {m.status === 'read' && <span style={{color:'#53bdeb', fontSize:14}}>✓</span>}
-{m.status === 'failed' && <span style={{color:'red', fontSize:14}}>✗</span>}
 {eyeState === 'delivered' && <span style={{fontSize:14}}>👀</span>}
 {eyeState === 'read' && <span style={{fontSize:14}}>😂</span>}
 {eyeState === 'failed' && <span style={{fontSize:14}}>😭</span>}
