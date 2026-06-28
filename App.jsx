@@ -287,24 +287,28 @@ onTouchEnd={stopAudioRecord}
 const sendMsg = () => {
 if(!input.trim()) return
 playSound('typing')
-const msg = {
-id:Date.now(),
-text: CryptoJS.AES.encrypt(input, 'royal-key-2026').toString(), // 1. شفر الاول
-type:'text',
-time:new Date().toLocaleTimeString('ar-EG'),
-status: 'sent' // 2. واحد بس
-}
-setMessages(prev => [...prev, msg]) // 3. ورّيها في الشاشه
+setEyeState('sending') // 1. 😐 مغمضة + صح رمادي 1
+const msg = {id:Date.now(), text: CryptoJS.AES.encrypt(input, 'royal-key-2026').toString(), type:'text', time:new Date().toLocaleTimeString('ar-EG'), status: 'sending'}
+setMessages(prev => [...prev, msg])
 setInput('')
-playSound('goldDrop') // 4. ترنجرجر
-// 5. ابعت لSupabase والعيون تشتغل هنا
+setTimeout(()=>{ // 2. 😉 صح رمادي 2
+setEyeState('sent')
+playSound('goldDrop') // ترنجرجر
+}, 300)
 supabase.from('messages').insert(msg)
 .then(()=>{ 
-playSound('eyeLaugh') // وصلت = ضحك ه
-setEyeState('laughing') 
-setTimeout(()=>{ setEyeState('blinking'); playSound('eyeBlink') }, 800) // بعدها بربش
+setEyeState('delivered') // 3. 😉 تبربش + صح ازرق
+playSound('eyeBlink') 
+// 4. الضحكة 😂 - فايك للتجربة
+setTimeout(()=>{
+setEyeState('read') 
+playSound('eyeLaugh') // "ه"
+}, 2000) // بعد 2 ثانيه من التوصيل هتضحك لوحدها
 })
-}
+.catch(()=>{ 
+setEyeState('failed') // 5. 😭 عياط
+playSound('eyeCry')
+})
 }
 const  startAudioRecord = غير متزامن  ( ) => {
 setIsRecording ( true )
