@@ -289,15 +289,6 @@ if(!input.trim()) return
 playSound('typing')
 const msg = {
 id:Date.now(),
-text:input,
-type:'text',
-time:new Date().toLocaleTimeString('ar-EG'),
-status:'sent'
-const sendMsg = () => {
-if(!input.trim()) return
-playSound('typing')
-const msg = {
-id:Date.now(),
 text: CryptoJS.AES.encrypt(input, 'royal-key-2026').toString(), // 1. شفر الاول
 type:'text',
 time:new Date().toLocaleTimeString('ar-EG'),
@@ -311,6 +302,13 @@ supabase.from('messages').insert(msg)
 .then(()=>{ 
 playSound('eyeLaugh') // وصلت = ضحك ه
 setEyeState('laughing') 
+setTimeout(()=>{ setEyeState('blinking'); playSound('eyeBlink') }, 800) // بعدها بربش
+})
+.catch(()=>{ 
+playSound('eyeCry') // فشلت = عياط
+setEyeState('crying')
+})
+}
 setTimeout(()=>{ setEyeState('blinking'); playSound('eyeBlink') }, 800) // بعدها بربش
 })
 .catch(()=>{ 
