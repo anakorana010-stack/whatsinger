@@ -249,19 +249,19 @@ const renderChats = () => (
 </div>
 {m.type==='text' && <div style={{marginTop:5}}>{m.text}</div>}
 {m.type==='audio' && <audio controls src={m.text} style={{width:'100%', marginTop:5}} />}
-<div style={{display:'flex', justifyContent:'space-between', marginTop:5, fontSize:12}}>
-const EyesUI = () => (
-<div style={{fontSize: 48, textAlign: 'center'}}>
-{eyeState === 'failed'? '😭' : eyeState === 'read'? '😂' : eyeState === 'delivered'? '😉' : '😐'}
+<div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:5, fontSize:12}}>
+<div style={{display:'flex', alignItems:'center', gap:4}}>
+{m.status === 'sent' && <span style={{color:'gray', fontSize:14}}>✓</span>}
+{m.status === 'delivered' && <span style={{color:'#53bdeb', fontSize:14}}>✓</span>}
+{m.status === 'read' && <span style={{color:'#53bdeb', fontSize:14}}>✓</span>}
+{m.status === 'failed' && <span style={{color:'red', fontSize:14}}>✗</span>}
+{eyeState === 'delivered' && <span style={{fontSize:14}}>👀</span>}
+{eyeState === 'read' && <span style={{fontSize:14}}>😂</span>}
+{eyeState === 'failed' && <span style={{fontSize:14}}>😭</span>}
+<span>{m.time}</span>
 </div>
-)
-<div>✓ <span className="eyes">👁️👁️</span></div>
-<div>{m.time}</div>
 <button style={s.transBtn}>ترجمة</button>
 </div>
-</div>
-</div>
-))}
 <div ref={messagesEndRef} />
 </div>
 <div style={s.inputBar}>
