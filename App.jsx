@@ -8,9 +8,8 @@ if (!unlocked) return (
 <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100vh', gap:12}}>
 <h2>🔒 قفل الملك "تخ"</h2>
 <input type="password" placeholder="كلمة السر" value={pass} onChange={e=>setPass(e.target.value)} style={{padding:10, fontSize:16}}/>
-<button onClick={()=> pass === SECRET ? setUnlocked(true) : alert('غلط يا هكر')} style={{padding:'10px 20px'}}>فتح</button>
+<button onClick={()=> pass === SECRET ? setUnlocked(true) : alert('غلط يا هكر 😂')} style={{padding:'10px 20px'}}>فتح</button>
 </div>
-)
 export default function App() {
 const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
