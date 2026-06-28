@@ -250,6 +250,11 @@ const renderChats = () => (
 {m.type==='text' && <div style={{marginTop:5}}>{m.text}</div>}
 {m.type==='audio' && <audio controls src={m.text} style={{width:'100%', marginTop:5}} />}
 <div style={{display:'flex', justifyContent:'space-between', marginTop:5, fontSize:12}}>
+const EyesUI = () => (
+<div style={{fontSize: 48, textAlign: 'center'}}>
+{eyeState === 'failed'? '😭' : eyeState === 'read'? '😂' : eyeState === 'delivered'? '😉' : '😐'}
+</div>
+)
 <div>✓ <span className="eyes">👁️👁️</span></div>
 <div>{m.time}</div>
 <button style={s.transBtn}>ترجمة</button>
