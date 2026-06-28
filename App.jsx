@@ -86,6 +86,22 @@ playSound('fail')
 }
 // صفحة تسجيل الدخول
 if(page==='login' ||!user) return (
+<span>{user.name}</span>
+{/* التاج بيقلب فضي لو فاضل 10 ايام */}
+<span style={{
+marginLeft:5, 
+fontSize:20, 
+color: badgeStatus === 'gold' ? 'gold' : 'silver'
+}}>👑</span>
+{/* الشارة تختفي لو خلصت، تبقى فضي لو فاضل 10 ايام */}
+{badgeStatus !== 'hidden' && 
+<span style={{
+marginLeft:5, 
+fontSize:18, 
+color: badgeStatus === 'gold' ? 'gold' : 'silver',
+title: badgeStatus === 'silver' ? `فاضل ${daysLeft} ايام` : ''
+}}>⭐</span>
+}
 <div style={{...s.page,background:c.bg}}>
 <div style={s.logo}>👑 <span style={{color:c.main}}>Whatsinger</span></div>
 <h3 style={{color:c.main, textAlign:'center'}}>انا المالك الرسمي لتطبيق Whatsinger</h3>
