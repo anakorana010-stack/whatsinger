@@ -7,7 +7,21 @@ import { supabase } from './supabase'
 if (!unlocked) return (
 <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100vh', gap:12}}>
 <h2>🔒 قفل الملك "تخ"</h2>
-<input type="password" placeholder="كلمة السر" value={pass} onChange={e=>setPass(e.target.value)} style={{padding:10, fontSize:16}}/>
+<inpu<div style={{position:'relative', width:'100%'}}>
+<input 
+type={showPass ? 'text' : 'password'} 
+placeholder="اكتب الباسورد..." 
+value={pass} 
+onChange={(e)=>setPass(e.target.value)} 
+style={{padding:10, fontSize:16, width:'100%', paddingRight:40}}
+/>
+<button 
+onClick={()=> setShowPass(!showPass)}
+style={{position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:20}}
+>
+{showPass ? '👁️' : '🙈'}
+</button>
+</div>
 <button onClick={()=> pass === SECRET ? setUnlocked(true) : alert('غلط يا هكر 😂')} style={{padding:'10px 20px'}}>فتح</button>
 export default function App() {
 const [user, setUser] = useState(null)
@@ -20,7 +34,7 @@ const [input, setInput] = useState('')
 const [badgeStatus, setBadgeStatus] = useState('none')
 const [daysLeft, setDaysLeft] = useState(0)
 const [isRecording, setIsRecording] = useState(false)
-const [eyeState, setEyeState] = useState('sending') // sending, sent, delivered, failed, read
+const const [showPass,setShowPass] = useState(false);
 const [soundsEnabled, setSoundsEnabled] = useState(true)
 const [sounds, setSounds] = useState({
 goldDrop:new Audio('data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA'), // ترنجرجر
