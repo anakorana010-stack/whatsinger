@@ -12,7 +12,7 @@ const [input, setInput] = useState('')
 const [badgeStatus, setBadgeStatus] = useState('none')
 const [daysLeft, setDaysLeft] = useState(0)
 const [isRecording, setIsRecording] = useState(false)
-const [eyeState, setEyeState] = useState('normal') // <-- انسخه هنا
+const [eyeState, setEyeState] = useState('sending') // sending, sent, delivered, failed, read
 const [soundsEnabled, setSoundsEnabled] = useState(true)
 const [sounds, setSounds] = useState({
 goldDrop:new Audio('data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA'), // ترنجرجر
