@@ -47,11 +47,21 @@ if(data.user.id === ADMIN_ID) setIsAdmin(true)
 })
 }, [])
 const loadUserData = async (id) => {
+const loadUserData = async (id) => {
 const { data } = await supabase.from('profiles').select('*').eq('id', id).single()
 if(data){
-setDaysLeft(data.days_left || 0)
-setBadgeStatus(data.badge_status || 'none')
+const days = data.days_left || 0
+setDaysLeft(days)
+// التاج والشارة الذكية "تخ"
+if (days <= 0) {
+setBadgeStatus('hidden') // خلص = اختفي
+} else if (days <= 10) {
+setBadgeStatus('silver') // فاضل 10 ايام او اقل = فضي تحذير 
+} else {
+setBadgeStatus('gold') // شغال = دهبي
+}
 setSounds(data.sounds || sounds)
+}
 }
 const playSound = (name) => {
 if(!soundsEnabled ||!sounds[name]) return
