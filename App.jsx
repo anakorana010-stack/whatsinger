@@ -304,17 +304,6 @@ playSound('eyeLaugh') // وصلت = ضحك ه
 setEyeState('laughing') 
 setTimeout(()=>{ setEyeState('blinking'); playSound('eyeBlink') }, 800) // بعدها بربش
 })
-.catch(()=>{ 
-playSound('eyeCry') // فشلت = عياط
-setEyeState('crying')
-})
-}
-setTimeout(()=>{ setEyeState('blinking'); playSound('eyeBlink') }, 800) // بعدها بربش
-})
-.catch(()=>{ 
-playSound('eyeCry') // فشلت = عياط
-setEyeState('crying')
-})
 }
 }
 const  startAudioRecord = غير متزامن  ( ) => {
