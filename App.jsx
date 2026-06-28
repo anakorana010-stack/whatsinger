@@ -293,57 +293,64 @@ text:input,
 type:'text',
 time:new Date().toLocaleTimeString('ar-EG'),
 status:'sent'
-status: 'sent',
-status: 'sending',
-onFail: () => { playSound('eyeCry') }, // موصلتش تعيط واح
-onSuccess: () => { playSound('eyeLaugh') } // وصلت تضحك ه
-onRead: () => { playSound('eyeBlink') } // العين تبربش لما تتقري
+const sendMsg = () => {
+if(!input.trim()) return
+playSound('typing')
+const msg = {
+id:Date.now(),
+text: CryptoJS.AES.encrypt(input, 'royal-key-2026').toString(), // 1. شفر الاول
+type:'text',
+time:new Date().toLocaleTimeString('ar-EG'),
+status: 'sent' // 2. واحد بس
 }
-supabase.from('messages').insert(msg).then(() => {
-playSound('eyeLaugh') // وصلت = ضحكة ومسح دموع
-}).catch(() => {
-playSound('eyeCry') // فشلت = عياط
-})
-const encryptedMsg = CryptoJS.AES.encrypt(msg.text, 'royal-key-2026').toString()
-msg.text = encryptedMsg // الرسالة متشفرة يا ملك
-setMessages([...messages, msg])
+setMessages(prev => [...prev, msg]) // 3. ورّيها في الشاشه
 setInput('')
-playSound('send')
-setTimeout(()=>messagesEndRef.current?.scrollIntoView({behavior:'smooth'}), 100)
-playSound('goldDrop') // ترنجرجرج 💥 السبيكة وقعت
-}
-const startAudioRecord = async () => {
-setIsRecording(true)
-playSound('mic')
-playSound('recording')
-try {
-const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-mediaRecorder = new MediaRecorder(stream)
-audioChunks = []
-mediaRecorder.ondataavailable = e => audioChunks.push(e.data)
-mediaRecorder.onstop = async () => {
-const blob = new Blob(audioChunks, { type: 'audio/webm' })
-const fileName = `${user.id}-${Date.now()}.webm`
-playSound('goldDrop'); // بدل success
-const { data } = supabase.storage.from('voice-messages').getPublicUrl(fileName)
-setMessages(prev => [...prev, {
-id:Date.now(), 
-text:data.publicUrl, 
-type:'audio', 
-time:new Date().toLocaleTimeString('ar-EG')
-}])
-playSound('goldDrop'); // بدل success
-}
-mediaRecorder.start()
-} catch(e) {
-alert('مش قادر افتح المايك')
-setIsRecording(false)
+playSound('goldDrop') // 4. ترنجرجر
+// 5. ابعت لSupabase والعيون تشتغل هنا
+supabase.from('messages').insert(msg)
+.then(()=>{ 
+playSound('eyeLaugh') // وصلت = ضحك ه
+setEyeState('laughing') 
+setTimeout(()=>{ setEyeState('blinking'); playSound('eyeBlink') }, 800) // بعدها بربش
+})
+.catch(()=>{ 
+playSound('eyeCry') // فشلت = عياط
+setEyeState('crying')
+})
 }
 }
-const stopAudioRecord = () => {
-if(mediaRecorder && isRecording){
-mediaRecorder.stop()
-setIsRecording(false)
+const  startAudioRecord = غير متزامن  ( ) => {
+setIsRecording ( true )
+تشغيل الصوت ( 'الميكروفون' )
+تشغيل الصوت ( 'التسجيل' )
+يحاول  {
+const  stream = await navigator.mediaDevices.getUserMedia ( { audio : true } )​​​  
+mediaRecorder = new MediaRecorder ( stream )
+audioChunks = [ ]
+mediaRecorder. ondataavailable = e => audioChunks. دفع ( ه. البيانات )
+mediaRecorder.onstop = async ( ) = > { 
+const  blob = new Blob ( audioChunks, {  type : 'audio/webm'  } )
+const  fileName = ` $ { user.id } - ${ Date.now ( ) } . webm`
+playSound ( 'goldDrop' ) ; // بدل النجاح
+const  {  data  } = supabase. storage . from ( 'voice-messages' ) . getPublicUrl ( fileName )
+setMessages ( prev => [ ...prev, {
+id :Date. now ( ) ,
+نص : بيانات. عنوان URL العام ،
+النوع : 'صوتي' ،
+الوقت : تاريخ جديد ( ) . toLocaleTimeString ( 'ar-EG' )
+} ] )
+playSound ( 'goldDrop' ) ; // بدل النجاح
+}
+mediaRecorder.start ( )​
+}  catch ( e )  {
+تنبيه ( 'مش قادر على تسجيل مايك' )
+setIsRecording ( false )
+}
+}
+const  stopAudioRecord = ( ) => {
+إذا كان ( mediaRecorder && isRecording ) {
+MediaRecorder.stop ( )​
+setIsRecording ( false )
 mediaRecorder.stream.getTracks().forEach(track => track.stop())
 }
 }
