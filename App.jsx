@@ -189,6 +189,8 @@ eyeLaugh:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAE
 mic: 'https://cdn.freesound.org/previews/131/131142_2337290-lq.mp3',
 vinyl: 'https://cdn.freesound.org/previews/344/344288_5121236-lq.mp3',
 goldDrop: 'https://cdn.freesound.org/previews/476/476178_9492730-lq.mp3',
+
+ringtone: 'https://انسخ_الرابط_بتاعك_هنا.mp3', // رنة التخ الملكي
 recording: '', typing: '', send: '', open: '', fail: '', success: '',
 call_icon: '', video_icon: '', ringtone: '', notif_in: '', notif_out: ''
 });
