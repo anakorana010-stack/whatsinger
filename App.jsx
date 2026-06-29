@@ -141,6 +141,37 @@ animation: 'glow 2s ease infinite'
 } : {}
 return false
 }
+// 14. States حلم اليقظة
+const [dreamText, setDreamText] = useState('')
+const [dreamVideoUrl, setDreamVideoUrl] = useState(null)
+const [generatingDream, setGeneratingDream] = useState(false)
+const [dreamPaid, setDreamPaid] = useState(false) // هتبقى true بعد الدفع
+// 15. دالة توليد الحلم بـ Luma
+const generateDreamVideo = async () => {
+if(!dreamPaid){
+alert('اشترك الاول يا ملك ب 5$ عشان نفعل Luma 👑')
+return
+}
+setGeneratingDream(true)
+playSound('vinyl') // صوت اسطوانه
+try{
+// انت قايل المفاتيح مربوطه خلاص
+const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/luma-generate`, {
+method: 'POST',
+headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`},
+body: JSON.stringify({prompt: dreamText, user_id: user.id})
+});
+const data = await res.json()
+setDreamVideoUrl(data.video_url) // Luma هترجع لينك الفيديو
+// نخزن الحلم في السيرفر حتى لو اتمسح من عنده
+await supabase.from('dreams').insert({user_id: user.id, text: dreamText, video_url: data.video_url})
+playSound('goldDrop')
+} catch(err){
+alert('فشل توليد الحلم')
+playSound('fail')
+}
+setGeneratingDream(false)
+}
 const [email, setEmail] = useState('')
 const [password, setPassword] = useState('')
 const [messages, setMessages] = useState([])
