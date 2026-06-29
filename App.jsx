@@ -6,6 +6,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 if (!unlocked) return (
 <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100vh', gap:12}}>
+<div style={{textAlign:'center', marginBottom:12, animation:'glow 2s infinite'}}>
+<h1 style={{fontSize:36, fontWeight:900, color:'#FFD700', textShadow:'0 0 20px #FFD700'}}>
+تـخ 👑
+</h1>
+</div>
 <h2>🔒 قفل الملك "تخ"</h2>
 <inpu<div style={{position:'relative', width:'100%'}}>
 <input 
