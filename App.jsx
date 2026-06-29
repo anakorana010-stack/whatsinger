@@ -48,6 +48,32 @@ export default function App() {
 const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
 const [activeTab, setActiveTab] = useState('chats')
+// 1. States جديده فوق خالص مع باقي الuseState
+const [users, setUsers] = useState([]) // كل الناس
+const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقه
+const [showAddFriend, setShowAddFriend] = useState(false) // مودال الاضافه
+// 2. دالة تجيب كل اليوزرز ماعدا انت
+const loadUsers = async () => {
+const { data } = await supabase.from('profiles').select('*').neq('id', user.id)
+setUsers(data || [])
+}
+// 3. دالة تبعت طلب صداقه
+const sendFriendRequest = async (targetId) => {
+await supabase.from('friend_requests').insert({
+from_user: user.id,
+to_user: targetId,
+status: 'pending'
+})
+playSound('goldDrop') // ترنجرجر
+alert('تم ارسال الطلب يا ملك 👑')
+}
+// 4. دالة تقبل/ترفض
+const acceptRequest = async (reqId, fromId) => {
+await supabase.from('friend_requests').update({status: 'accepted'}).eq('id', reqId)
+// نضيفهم اصحاب في جدول friends
+await supabase.from('friends').insert([{user_id: user.id, friend_id: fromId}, {user_id: fromId, friend_id: user.id}])
+playSound('eyeLaugh') // ضحكة
+}
 const [email, setEmail] = useState('')
 const [password, setPassword] = useState('')
 const [messages, setMessages] = useState([])
