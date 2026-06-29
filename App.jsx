@@ -4,6 +4,13 @@ const SECRET = "تخ الملك"; // <-- غيرها لاي كلمة انت عا�
 import CryptoJS from 'crypto-js' // قفل ملكي للرسايل
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
+<style>{`
+@keyframes glow {
+0% { text-shadow: 0 0 10px #FFD700; }
+50% { text-shadow: 0 0 25px #FFD700, 0 0 40px #FFA500; } 
+100% { text-shadow: 0 0 10px #FFD700; }
+}
+`}</style>
 if (!unlocked) return (
 <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100vh', gap:12}}>
 <div style={{textAlign:'center', marginBottom:12, animation:'glow 2s infinite'}}>
