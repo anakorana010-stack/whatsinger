@@ -4,7 +4,7 @@ const SECRET = "تخ الملك"; // <-- غيرها لاي كلمة انت عا�
 import CryptoJS from 'crypto-js' // قفل ملكي للرسايل
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
-<style>{`
+<style>{`@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }`}</style>
 @keyframes glow {
 0% { text-shadow: 0 0 10px #FFD700; }
 50% { text-shadow: 0 0 25px #FFD700, 0 0 40px #FFA500; } 
@@ -38,8 +38,10 @@ style={{position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', 
 if(pass === SECRET) {
 sounds.goldDrop.play(); // صوت الفلوس يا ملك
 setUnlocked(true);
-} else {
+else {
 alert('غلط يا ملك 😂')
+document.body.style.animation = 'shake 0.5s';
+setTimeout(()=> document.body.style.animation = '', 500);
 }
 }} style={{padding:'10px 20px'}}>دخول</button>
 export default function App() {
