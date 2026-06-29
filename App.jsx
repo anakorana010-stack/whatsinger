@@ -74,6 +74,18 @@ await supabase.from('friend_requests').update({status: 'accepted'}).eq('id', req
 await supabase.from('friends').insert([{user_id: user.id, friend_id: fromId}, {user_id: fromId, friend_id: user.id}])
 playSound('eyeLaugh') // ضحكة
 }
+// 5. States البروفايل
+const [profileUser, setProfileUser] = useState(null) // اليوزر اللي فاتح بروفايله
+const [userPosts, setUserPosts] = useState([]) // منشوراته
+// 6. دالة تفتح البروفايل
+const openProfile = async (userId) => {
+const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single()
+const { data: posts } = await supabase.from('posts').select('*').eq('user_id', userId).order('created_at', {ascending:false})
+setProfileUser(profile)
+setUserPosts(posts || [])
+setCurrentPage('profile') // هنعمل صفحه اسمها profile
+playSound('eyeBlink') // بربش
+}
 const [email, setEmail] = useState('')
 const [password, setPassword] = useState('')
 const [messages, setMessages] = useState([])
@@ -116,7 +128,6 @@ if(data.user.id === ADMIN_ID) setIsAdmin(true)
 }
 })
 }, [])
-const loadUserData = async (id) => {
 const loadUserData = async (id) => {
 const { data } = await supabase.from('profiles').select('*').eq('id', id).single()
 if(data){
