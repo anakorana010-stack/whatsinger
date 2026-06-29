@@ -56,7 +56,7 @@ const [isAdmin, setIsAdmin] = useState(false)
 const [appCode, setAppCode] = useState('<h1>مرحبا</h1>')
 const updateAppCode = (code) => setAppCode(code)
 }
-const c = { bg: '#000', card: '#1a1a1a', main: '#FFD700', text: '#FFD700' }
+const c = { bg: '#000', card: '#000', main: '#FFD700', text: '#FFD700' }
 const [showMetal, setShowMetal] = useState(false)
 const [metalMsg, setMetalMsg] = useState('')
 const [metalReply, setMetalReply] = useState('')
