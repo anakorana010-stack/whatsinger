@@ -105,6 +105,40 @@ playSound('fail')
 // supabase.from('bans').insert({user_id: hackerId, reason: 'محاولة اختراق'})
 return true // ممنوع يتبعت
 }
+// 10. States التعديل والترجمة والالوان والنار
+const [editingMsgId, setEditingMsgId] = useState(null) // بنعدل رسالة رقم كام
+const [editText, setEditText] = useState('')
+const [textColor, setTextColor] = useState('#FFD700') // لون الكلام دهبي
+const [bgColor, setBgColor] = useState('#000') // لون الخلفية اسود
+const [keyboardColor, setKeyboardColor] = useState('#FFD700') // لون الكيبورد
+const [fireText, setFireText] = useState(false) // الكتابة بالنار شغاله ولا لا
+// 11. دالة التعديل - مبتختفيش ابدا زي ما طلبت
+const startEdit = (msg) => {
+setEditingMsgId(msg.id)
+setEditText(msg.text)
+playSound('typing')
+}
+const saveEdit = async () => {
+await supabase.from('messages').update({text: editText, edited: true}).eq('id', editingMsgId)
+setMessages(prev => prev.map(m => m.id === editingMsgId? {...m, text: editText, edited: true} : m))
+setEditingMsgId(null)
+playSound('goldDrop')
+}
+// 12. دالة الترجمة مصري <> مغربي <> انجليزي
+const translateMsg = async (text, toLang) => {
+// مثال: هتربطها بـ Google Translate API او MyMemory بعدين
+// دلوقتي هنعملها فايك عشان نجرب
+const map = {'ازيك ياقمر': 'كي داير يا قمر بالمغربي', 'بحبك': 'كنبغيك'}
+return map[text] || text + ` [مترجم لـ ${toLang}]`
+}
+// 13. ستايل الكتابة بالنار
+const fireStyle = fireText? {
+background: 'linear-gradient(45deg, #ff0000, #ff7300, #ffeb00, #ff0000)',
+backgroundSize: '400% 400%',
+WebkitBackgroundClip: 'text',
+WebkitTextFillColor: 'transparent',
+animation: 'glow 2s ease infinite'
+} : {}
 return false
 }
 const [email, setEmail] = useState('')
