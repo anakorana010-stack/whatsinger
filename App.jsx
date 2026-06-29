@@ -34,7 +34,14 @@ style={{position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', 
 {showPass ? '👁️' : '🙈'}
 </button>
 </div>
-<button onClick={()=> pass === SECRET ? setUnlocked(true) : alert('غلط يا هكر 😂')} style={{padding:'10px 20px'}}>فتح</button>
+<button onClick={()=> {
+if(pass === SECRET) {
+sounds.goldDrop.play(); // صوت الفلوس يا ملك
+setUnlocked(true);
+} else {
+alert('غلط يا ملك 😂')
+}
+}} style={{padding:'10px 20px'}}>دخول</button>
 export default function App() {
 const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
