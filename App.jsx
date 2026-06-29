@@ -189,7 +189,11 @@ eyeLaugh:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAE
 mic: 'https://cdn.freesound.org/previews/131/131142_2337290-lq.mp3',
 vinyl: 'https://cdn.freesound.org/previews/344/344288_5121236-lq.mp3',
 goldDrop: 'https://cdn.freesound.org/previews/476/476178_9492730-lq.mp3',
-
+call_icon: 'https://cdn.freesound.org/previews/341/341106_5300988-lq.mp3', // صوت اتصال
+video_icon: 'https://cdn.freesound.org/previews/323/323574_4813298-lq.mp3', // صوت فيديو 
+ringtone: 'https://cdn.freesound.org/previews/270/270331_5123856-lq.mp3', // رنه الموبايل الملكي
+notif_in: 'https://cdn.freesound.org/previews/254/254316_4448315-lq.mp3', // اشعار داخل
+notif_out: 'https://cdn.freesound.org/previews/254/254316_4448315-lq.mp3', // اشعار خارج
 ringtone: 'https://انسخ_الرابط_بتاعك_هنا.mp3', // رنة التخ الملكي
 recording: '', typing: '', send: '', open: '', fail: '', success: '',
 call_icon: '', video_icon: '', ringtone: '', notif_in: '', notif_out: ''
