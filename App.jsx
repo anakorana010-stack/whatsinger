@@ -86,6 +86,27 @@ setUserPosts(posts || [])
 setCurrentPage('profile') // هنعمل صفحه اسمها profile
 playSound('eyeBlink') // بربش
 }
+// 7. States المجموعات والحمايه
+const [groups, setGroups] = useState([])
+const [keyboardLocked, setKeyboardLocked] = useState(false) // قفل الكيبورد
+const [hackerAlert, setHackerAlert] = useState(null) // لو هاكر دخل
+// 8. دالة قفل الكيبورد الملكي
+const toggleKeyboardLock = () => {
+setKeyboardLocked(!keyboardLocked)
+playSound('goldDrop')
+alert(keyboardLocked ? 'الكيبورد اتفتح 🔓' : 'الكيبورد اتقفل 🔒')
+}
+// 9. حماية الهاكر - تشتغل تلقائي لو حد بعت كود <script>
+const checkForHacker = (text) => {
+if(text.includes('<script') || text.includes('hack') || text.includes('virus')){
+setHackerAlert('⚠️ هاكر اتحظر تلقائي')
+playSound('fail')
+// هنا هنبعتلك انت كادمن + نبلغ الشرطه + نحظر اليوزر
+// supabase.from('bans').insert({user_id: hackerId, reason: 'محاولة اختراق'})
+return true // ممنوع يتبعت
+}
+return false
+}
 const [email, setEmail] = useState('')
 const [password, setPassword] = useState('')
 const [messages, setMessages] = useState([])
