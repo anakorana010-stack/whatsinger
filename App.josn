@@ -193,6 +193,44 @@ setGeneratingDream(false)
 }
 const [email, setEmail] = useState('')
 const [password, setPassword] = useState('')
+// صفحة انشاء الحساب - فورم الـ 14 خانة
+const [form, setForm] = useState({
+name: '',
+password: '',
+phone: '',
+whatsingerEmail: '',
+gmail: '',
+birthDate: '',
+job: '',
+governorate: '',
+center: '',
+moved: '',
+movedTo: '',
+studyType: '',
+studyPlace: '',
+gender: '',
+status: '',
+nickname: ''
+});
+const [zodiac, setZodiac] = useState('');
+const handleChange = (key, value) => {
+setForm(prev => ({...prev, [key]: value}));
+};
+// الدخول بالرقم هو الاساسى
+const handleCreate = async () => {
+if(!form.phone || !form.password) return alert('اكتب رقم الهاتف والباسورد يا امبراطور');
+const fakeEmail = form.phone + '@whatsinger.com';
+try {
+let { error } = await supabase.auth.signInWithPassword({ email: fakeEmail, password: form.password });
+if(error) {
+const { data, error: signError } = await supabase.auth.signUp({ email: fakeEmail, password: form.password });
+if(signError) return alert(signError.message);
+if(data?.user) setUser(data.user);
+}
+} catch(e) {}
+setUser({ email: fakeEmail });
+setCurrentPage('main');
+};
 const [messages, setMessages] = useState([])
 const [input, setInput] = useState('')
 const [badgeStatus, setBadgeStatus] = useState('none')
