@@ -845,6 +845,7 @@ const s = {
 page:{minHeight:'100vh',display:'flex',flexDirection:'column',fontFamily:'Cairo',color:'#FFD700'},
 logo:{fontSize:32,fontWeight:900,textAlign:'center',padding:20},
 input:{width:'100%',padding:12,margin:'8px 0',background:'#000',border:'2px solid #FFD700',borderRadius:8,color:'#FFD700',outline:'none'},
+label:{color:'#FFD700',fontWeight:700,fontSize:14,display:'block',marginTop:10},
 btn:{width:'100%',padding:12,background:'#FFD700',border:'none',borderRadius:8,fontWeight:900,cursor:'pointer',margin:'5px 0'},
 btnOutline:{width:'100%',padding:12,background:'transparent',border:'2px solid #FFD700',borderRadius:8,color:'#FFD700',cursor:'pointer'},
 header:{display:'flex',alignItems:'center',padding:10,color:'#000',borderBottom:'3px solid'},
