@@ -619,7 +619,9 @@ if(page==='settings') return (
 ))}
 <h3 style={{color:c.main, marginTop:30}}>الاشتراك في الشارة الذهبية</h3>
 <p style={{color:'#fff'}}>شهرى 10$ | اسبوعى 5$ | اول 7 ايام مجانا</p>
-<button style={s.btn} onClick={()=>alert('اربط بوابة الدفع هنا')}>اشترك الآن</button>
+<p style={{color:'#fff'}}>حالتك: {subscription.status === 'none' ? 'مفيش اشتراك' : subscription.status === 'gold' ? 'دهبى 👑' : 'فضى 🥈'} | فاضل {daysLeft} يوم</p>
+<button style={s.btn} onClick={()=>subscribe('weekly')}>اشتراك اسبوعى 5$</button>
+<button style={s.btn} onClick={()=>subscribe('monthly')}>اشتراك شهرى 10$</button>
 {isAdmin && (
 <button style={s.btn} onClick={()=>{setPage('adminVerify'); loadVerifications()}}>
 طلبات التحقق من الجنس
