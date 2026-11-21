@@ -66,6 +66,7 @@ export default function App() {
 const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
 const [activeTab, setActiveTab] = useState('chats')
+const [eyeState, setEyeState] = useState('normal')
 // 1. States جديده فوق خالص مع باقي الuseState
 const [users, setUsers] = useState([]) // كل الناس
 const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقه
