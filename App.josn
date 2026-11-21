@@ -625,14 +625,35 @@ if(page==='settings') return (
 {isAdmin && (
 <button style={s.btn} onClick={()=>{setPage('adminVerify'); loadVerifications()}}>
 طلبات التحقق من الجنس
+</button>
+)}
 <button style={s.btn} onClick={()=>setPage('appBuilder')}>
 🛠️ منشئ التطبيقات والألعاب
-</button>
 </button>
 )}
 <button style={{...s.btnOutline, marginTop:20}} onClick={()=>supabase.auth.signOut()}>
 تسجيل خروج
 </button>
+</div>
+</div>
+)
+// صفحة منشئ التطبيقات والألعاب
+if(page==='appBuilder') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<button onClick={()=>setPage('settings')} style={s.backBtn}>رجوع</button>
+<h2 style={{color:c.text}}>منشئ التطبيقات والالعاب</h2>
+<button onClick={()=>updateAppCode(appCode)} style={s.backBtn}>تحديث</button>
+</div>
+<p style={{color:'gold', textAlign:'center', fontWeight:'bold'}}>تطبيق واتسنجر 👑</p>
+<div style={{display: 'flex', height: '85vh'}}>
+<textarea
+value={appCode}
+onChange={(e)=>setAppCode(e.target.value)}
+style={{width:'50%', background:'#000', color:'#0f0', padding:10}}
+placeholder="اكتب كود HTML هنا"
+/>
+<iframe srcDoc={appCode} style={{width:'50%', background:'white'}} />
 </div>
 </div>
 )
@@ -729,7 +750,7 @@ borderRadius:20,
 maxWidth:'85%',
 fontWeight:700,
 color:'#000',
-// دهن السبيكة الدهب الملكي
+// دهن السبيكة الدهب الملكى
 background:'linear-gradient(135deg, #FFD700 0% 20%, #FFA500 40% 60%, #FFD700 80% 100%)',
 border:'3px solid #B8860B',
 boxShadow:'0 0 25px rgba(255,215,0,0.8), inset 0 0 15px rgba(255,255,255,0.4)',
