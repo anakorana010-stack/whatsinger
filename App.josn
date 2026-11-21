@@ -40,7 +40,7 @@ if (!unlocked) return (
 <inpu<div style={{position:'relative', width:'100%'}}>
 <input 
 type={showPass ? 'text' : 'password'} 
-placeholder="اكتب الباسورد..." 
+placeholder="اكتب الباسورد ياامبراطور..." 
 value={pass} 
 onChange={(e)=>setPass(e.target.value)} 
 style={{padding:10, fontSize:16, width:'100%', paddingRight:40}}
@@ -67,7 +67,7 @@ const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
 const [activeTab, setActiveTab] = useState('chats')
 const [eyeState, setEyeState] = useState('normal')
-// 1. States جديده فوق خالص مع باقى الuseState
+// 1. States جديدة فوق خالص مع باقى الuseState
 const [users, setUsers] = useState([]) // كل الناس
 const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقة
 const [showAddFriend, setShowAddFriend] = useState(false) // مودال الاضافة
@@ -102,7 +102,7 @@ const { data: profile } = await supabase.from('profiles').select('*').eq('id', u
 const { data: posts } = await supabase.from('posts').select('*').eq('user_id', userId).order('created_at', {ascending:false})
 setProfileUser(profile)
 setUserPosts(posts || [])
-setCurrentPage('profile') // هنعمل صفحه اسمها profile
+setCurrentPage('profile') // هنعمل صفحة اسمها profile
 playSound('eyeBlink') // بربش
 }
 // 7. States المجموعات والحماية
@@ -120,17 +120,17 @@ const checkForHacker = (text) => {
 if(text.includes('<script') || text.includes('hack') || text.includes('virus')){
 setHackerAlert('⚠️ هاكر اتحظر تلقائى')
 playSound('fail')
-// هنا هنبعتلك انت كادمن + نبلغ الشرطه + نحظر اليوزر
+// هنا هنبعتلك انت كادمن + نبلغ الشرطة + نحظر اليوزر
 // supabase.from('bans').insert({user_id: hackerId, reason: 'محاولة اختراق'})
 return true // ممنوع يتبعت
 }
 // 10. States التعديل والترجمة والالوان والنار
 const [editingMsgId, setEditingMsgId] = useState(null) // بنعدل رسالة رقم كام
 const [editText, setEditText] = useState('')
-const [textColor, setTextColor] = useState('#FFD700') // لون الكلام دهبي
+const [textColor, setTextColor] = useState('#FFD700') // لون الكلام دهبى
 const [bgColor, setBgColor] = useState('#000') // لون الخلفية اسود
 const [keyboardColor, setKeyboardColor] = useState('#FFD700') // لون الكيبورد
-const [fireText, setFireText] = useState(false) // الكتابة بالنار شغاله ولا لا
+const [fireText, setFireText] = useState(false) // الكتابة بالنار شغالة ولا لا
 // 11. دالة التعديل - مبتختفيش ابدا زي ما طلبت
 const startEdit = (msg) => {
 setEditingMsgId(msg.id)
@@ -160,7 +160,7 @@ animation: 'glow 2s ease infinite'
 } : {}
 return false
 }
-// 14. States حلم اليقظة
+// 14. States سجل حلمك 
 const [dreamText, setDreamText] = useState('')
 const [dreamVideoUrl, setDreamVideoUrl] = useState(null)
 const [generatingDream, setGeneratingDream] = useState(false)
@@ -172,7 +172,7 @@ alert('اشترك الاول يا ملك ب 5$ عشان نفعل Luma 👑')
 return
 }
 setGeneratingDream(true)
-playSound('vinyl') // صوت اسطوانه
+playSound('vinyl') // صوت اسطوانة
 try{
 // انت قايل المفاتيح مربوطة خلاص
 const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/luma-generate`, {
@@ -197,6 +197,40 @@ const [messages, setMessages] = useState([])
 const [input, setInput] = useState('')
 const [badgeStatus, setBadgeStatus] = useState('none')
 const [daysLeft, setDaysLeft] = useState(0)
+// 1. حالة الاشتراك الملكى
+const [subscription, setSubscription] = useState({
+status: 'none',
+plan: null,
+startDate: null,
+endDate: null
+});
+// 3. دالة الدفع
+const subscribe = (plan) => {
+const days = plan === 'weekly'? 7 : 30;
+const price = plan ==='weekly'? 5 : 10;
+alert(`جارى الدفع ${price}$... اول 7 ايام مجانا 👑`)
+const start = new Date();
+const end = new Date();
+end.setDate(end.getDate() + days);
+setSubscription({status: 'gold', plan: plan, startDate: start, endDate: end})
+}
+// 4. فحص الانذار - التاج يبقى فضى لما يفضل 10 ايام
+useEffect(()=>{
+if(subscription.endDate){
+const now = new Date();
+const diff = subscription.endDate - now;
+const days = Math.ceil(diff / (1000*60*60*24));
+setDaysLeft(days > 0 ? days : 0);
+if(days <= 10 && days > 0 && subscription.status === 'gold'){
+setSubscription(prev => ({...prev, status: 'silver'}))
+alert('باقى 10 ايام! التاج اصبح فضى 🥈')
+}
+if(days <= 0 && subscription.status !== 'none'){
+setSubscription({status: 'none', plan: null, startDate: null, endDate: null})
+alert('انتهت الشارة. التاج اصبح فضى 🥈')
+}
+}
+}, [subscription])
 const [isRecording, setIsRecording] = useState(false)
 const [showPass,setShowPass] = useState(false);
 const [soundsEnabled, setSoundsEnabled] = useState(true)
