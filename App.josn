@@ -598,6 +598,7 @@ const renderChats = () => (
 {eyeState === 'delivered' && <span style={{fontSize:14}}>👀</span>}
 {eyeState === 'read' && <span style={{fontSize:14}}>😂</span>}
 {eyeState === 'failed' && <span style={{fontSize:14}}>😭</span>}
+{isBored && <span>🥱 العيون زهقت ونامت 😴</span>}
 <span>{m.time}</span>
 </div>
 <button style={s.transBtn}>ترجمة لغتى لهجتى</button>
@@ -654,7 +655,6 @@ playSound('eyeLaugh') // "ه"
 .catch(()=>{ 
 setEyeState('failed') // 5. 😭 عياط
 playSound('eyeCry')
-{isBored && <span>🥱 العيون زهقت ونامت 😴</span>}
 })
 }
 const  startAudioRecord = غير متزامن  ( ) => {
