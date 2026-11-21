@@ -631,6 +631,7 @@ onTouchEnd={stopAudioRecord}
 )
 const sendMsg = () => {
 if(!input.trim()) return
+setLastActivity(Date.now())
 playSound('typing')
 setEyeState('sending') // 1. 😐 مغمضة + صح رمادى 1
 const msg = {id:Date.now(), text: CryptoJS.AES.encrypt(input, 'royal-key-2026').toString(), type:'text', time:new Date().toLocaleTimeString('ar-EG'), status: 'sending'}
@@ -653,9 +654,9 @@ playSound('eyeLaugh') // "ه"
 .catch(()=>{ 
 setEyeState('failed') // 5. 😭 عياط
 playSound('eyeCry')
+{isBored && <span>🥱 العيون زهقت ونامت 😴</span>}
 })
 }
-{isBored && <span>🥱 العيون زهقت ونامت 😴</span>}
 const  startAudioRecord = غير متزامن  ( ) => {
 setIsRecording ( true )
 تشغيل الصوت ( 'الميكروفون' )
