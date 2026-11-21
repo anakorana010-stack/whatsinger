@@ -302,7 +302,7 @@ What Singer= ماذا يغنى + بيغنى ايه + ماذا ارسل<br/>
 سجل حلمك او بعتلى ايه بالمصرى
 </p>
 <input style={s.input} placeholder="ايميلك او رقمك" value={email} onChange={e=>setEmail(e.target.value)} />
-<input style={s.input} placeholder="الباسوورد" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
+<input style={s.input} placeholder="باسووردك" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
 <button style={s.btn} onClick={()=>supabase.auth.signInWithPassword({email,password})}>دخول</button>
 <button style={s.btnOutline} onClick={()=>supabase.auth.signUp({email,password})}>حساب جديد - 7 ايام مجانا</button>
 <button style={s.metalBtn} onClick={()=>setShowMetal(true)}>
@@ -356,17 +356,17 @@ return (
 <button style={{background:'#ff3b30', color:'#fff', border:'none', padding:'10px 20px', borderRadius:8, cursor:'pointer'}}>خروج</button>
 </div>
 {/* الشريط السفلى التاج الملكى */}
-<div style={isRoyalQueen ? s.bottomNavQueen : s.bottomNavKing}>
-<button style={currentPage==='chats' ? s.navActive : s.navBtn}>💬 chats</button>
-<button style={currentPage==='feed' ? s.navActive : s.navBtn}>📰 feed</button>
-<button style={currentPage==='groups' ? s.navActive : s.navBtn}>👥 groups</button>
-<button style={currentPage==='story' ? s.navActive : s.navBtn}>📸 story</button>
+<div style={isRoyalQueen ? sKing.bottomNavQueen : sKing.bottomNavKing}>
+<button style={currentPage==='chats' ? sKing.navActive : sKing.navBtn}>💬 chats</button>
+<button style={currentPage==='feed' ? sKing.navActive : sKing.navBtn}>📰 feed</button>
+<button style={currentPage==='groups' ? sKing.navActive : sKing.navBtn}>👥 groups</button>
+<button style={currentPage==='story' ? sKing.navActive : sKing.navBtn}>📸 story</button>
 </div>
 </div>
 )
 }
 // ستايلات القصر الملكى - حط ده تحت الـ return على طول
-const s = {
+const sKing = {
 bottomNavKing: {
 position: 'fixed',
 bottom: 0,
