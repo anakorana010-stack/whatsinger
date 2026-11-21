@@ -664,17 +664,17 @@ message: `تم التحقق بواسطة إدارة Whatsinger: النتيجة $
 loadVerifications()
 }
 const renderBottomNav = () => (
-<div style={s.bottomNav}>
-<button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>
+<div style={sKing.bottomNavKing}>
+<button style={activeTab==='feed'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('feed')}>
 🏠<br/>الرئيسية
 </button>
-<button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>
+<button style={activeTab==='chats'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('chats')}>
 💬<br/>الشات
 </button>
-<button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>
+<button style={activeTab==='groups'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('groups')}>
 👥<br/>المجموعات
 </button>
-<button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>
+<button style={activeTab==='story'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('story')}>
 📸<br/>الاستورى
 </button>
 </div>
