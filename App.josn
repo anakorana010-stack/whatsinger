@@ -376,13 +376,80 @@ What Singer= ماذا يغنى + بيغنى ايه + ماذا ارسل<br/>
 <input style={s.input} placeholder="ايميلك او رقمك" value={email} onChange={e=>setEmail(e.target.value)} />
 <input style={s.input} placeholder="باسووردك" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
 <button style={s.btn} onClick={()=>supabase.auth.signInWithPassword({email,password})}>دخول</button>
-<button style={s.btnOutline} onClick={()=>supabase.auth.signUp({email,password})}>حساب جديد - 7 ايام مجانا</button>
+<button style={s.btnOutline} onClick={()=>setCurrentPage('create')}>حساب جديد - 7 ايام مجانا</button>
 <button style={s.metalBtn} onClick={()=>setShowMetal(true)}>
 🤖 ميتال المبرمج الذكي
 </button>
 <p style={{color:c.main, textAlign:'center', fontSize:12}}>
 صنع بواسطة راجاف الحسينى
 </p>
+</div>
+)
+// صفحة انشاء الحساب
+if(currentPage==='create') return (
+<div style={{minHeight:'100vh', background:'#000', color:'#FFD700', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:20}}>
+<h1 style={{fontSize:30, fontWeight:'bold', marginBottom:20}}>👑 إنشاء حساب ملكى</h1>
+<div style={{width:'100%', maxWidth:350, textAlign:'right'}}>
+<span style={s.label}>1- الاسم</span>
+<input style={s.input} placeholder="راجاف الحسينى" value={form.name} onChange={e => handleChange('name', e.target.value)} />
+<span style={s.label}>2- الرقم السرى</span>
+<input style={s.input} type="password" placeholder="الباسورد" value={form.password} onChange={e => handleChange('password', e.target.value)} />
+<span style={s.label}>3- رقم الهاتف</span>
+<input style={s.input} type="tel" placeholder="01xxxxxxxxx" value={form.phone} onChange={e => handleChange('phone', e.target.value)} />
+<span style={s.label}>4- بريد الحساب (اختيارى)</span>
+<input style={s.input} placeholder="rajafelhossine@whatsinger.com" value={form.whatsingerEmail} onChange={e => handleChange('whatsingerEmail', e.target.value)} />
+<span style={s.label}>5- بريد التسجيل جيميل او ابل</span>
+<input style={s.input} placeholder="example@gmail.com" value={form.gmail} onChange={e => handleChange('gmail', e.target.value)} />
+<span style={s.label}>6- تاريخ الميلاد</span>
+<input type="date" style={s.input} onChange={(e)=>{ handleChange('birthDate', e.target.value); setZodiac(getZodiac(e.target.value)); }} />
+<div style={{color:'#FFD700', textAlign:'center', margin:'10px 0', fontWeight:700}}>برجك: {zodiac}</div>
+<span style={s.label}>7- المهنة</span>
+<input style={s.input} placeholder="مثال: طالب، مهندس" value={form.job} onChange={e => handleChange('job', e.target.value)} />
+<span style={s.label}>8- المحافظة</span>
+<input style={s.input} placeholder="مثال: القاهرة" value={form.governorate} onChange={e => handleChange('governorate', e.target.value)} />
+<span style={s.label}>9- المركز / الحى</span>
+<input style={s.input} placeholder="مثال: مدينة نصر" value={form.center} onChange={e => handleChange('center', e.target.value)} />
+<span style={s.label}>10- انتقلت لمكان تانى؟</span>
+<select style={s.input} value={form.moved} onChange={e => handleChange('moved', e.target.value)}>
+<option value="">اختر</option>
+<option value="لا">لا</option>
+<option value="محافظة أخرى">محافظة أخرى</option>
+<option value="دولة أخرى">دولة أخرى</option>
+</select>
+{(form.moved === 'محافظة أخرى' || form.moved === 'دولة أخرى') && (
+<input style={s.input} placeholder="لو انتقلت، فين دلوقتي؟" value={form.movedTo} onChange={e => handleChange('movedTo', e.target.value)} />
+)}
+<span style={s.label}>11- الدراسة</span>
+<select style={s.input} value={form.studyType} onChange={e => handleChange('studyType', e.target.value)}>
+<option value="">اختر</option>
+<option value="مدرسة">مدرسة</option>
+<option value="جامعة">جامعة</option>
+<option value="خريج">خريج</option>
+<option value="لا أدرس">لا أدرس</option>
+</select>
+{(form.studyType === 'مدرسة' || form.studyType === 'جامعة') && (
+<input style={s.input} placeholder="اسم المدرسة أو الجامعة" value={form.studyPlace} onChange={e => handleChange('studyPlace', e.target.value)} />
+)}
+<span style={s.label}>12- الجنس</span>
+<select style={s.input} value={form.gender} onChange={e => handleChange('gender', e.target.value)}>
+<option value="">اختر</option>
+<option value="ذكر">ذكر</option>
+<option value="أنثى">أنثى</option>
+</select>
+<span style={s.label}>13- الحالة</span>
+<select style={s.input} value={form.status} onChange={e => handleChange('status', e.target.value)}>
+<option value="">اختر</option>
+<option value="أعزب">أعزب</option>
+<option value="مرتبط">مرتبط</option>
+<option value="متزوج">متزوج</option>
+<option value="مطلق">مطلق</option>
+<option value="أرمل">أرمل</option>
+</select>
+<span style={s.label}>14- الكنية / اللقب</span>
+<input style={s.input} placeholder="مثال: أبو محمد" value={form.nickname} onChange={e => handleChange('nickname', e.target.value)} />
+<button style={s.btnOutline} onClick={()=>setCurrentPage('login')}>تخطى - أكمل بعدين</button>
+<button style={s.btn} onClick={handleCreate}>إنشاء الحساب وإرسال الرمز 🚀</button>
+</div>
 </div>
 )
 // مودال ميتال المبرمج الذكي
