@@ -1,7 +1,7 @@
 const [unlocked, setUnlocked] = useState(false);
 const [pass, setPass] = useState("");
-const SECRET = "تخ الملك"; // <-- غيرها لاي كلمة انت عايزها
-import CryptoJS from 'crypto-js' // قفل ملكي للرسايل
+const SECRET = "تخ الملك"; // <-- غيرها لاى كلمة انت عايزها
+import CryptoJS from 'crypto-js' // قفل ملكى للرسايل
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 const getZodiac = (dateStr) => {
@@ -67,16 +67,16 @@ const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
 const [activeTab, setActiveTab] = useState('chats')
 const [eyeState, setEyeState] = useState('normal')
-// 1. States جديده فوق خالص مع باقي الuseState
+// 1. States جديده فوق خالص مع باقى الuseState
 const [users, setUsers] = useState([]) // كل الناس
-const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقه
-const [showAddFriend, setShowAddFriend] = useState(false) // مودال الاضافه
+const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقة
+const [showAddFriend, setShowAddFriend] = useState(false) // مودال الاضافة
 // 2. دالة تجيب كل اليوزرز ماعدا انت
 const loadUsers = async () => {
 const { data } = await supabase.from('profiles').select('*').neq('id', user.id)
 setUsers(data || [])
 }
-// 3. دالة تبعت طلب صداقه
+// 3. دالة تبعت طلب صداقة
 const sendFriendRequest = async (targetId) => {
 await supabase.from('friend_requests').insert({
 from_user: user.id,
@@ -105,20 +105,20 @@ setUserPosts(posts || [])
 setCurrentPage('profile') // هنعمل صفحه اسمها profile
 playSound('eyeBlink') // بربش
 }
-// 7. States المجموعات والحمايه
+// 7. States المجموعات والحماية
 const [groups, setGroups] = useState([])
 const [keyboardLocked, setKeyboardLocked] = useState(false) // قفل الكيبورد
 const [hackerAlert, setHackerAlert] = useState(null) // لو هاكر دخل
-// 8. دالة قفل الكيبورد الملكي
+// 8. دالة قفل الكيبورد الملكى
 const toggleKeyboardLock = () => {
 setKeyboardLocked(!keyboardLocked)
 playSound('goldDrop')
 alert(keyboardLocked ? 'الكيبورد اتفتح 🔓' : 'الكيبورد اتقفل 🔒')
 }
-// 9. حماية الهاكر - تشتغل تلقائي لو حد بعت كود <script>
+// 9. حماية الهاكر - تشتغل تلقائى لو حد بعت كود <script>
 const checkForHacker = (text) => {
 if(text.includes('<script') || text.includes('hack') || text.includes('virus')){
-setHackerAlert('⚠️ هاكر اتحظر تلقائي')
+setHackerAlert('⚠️ هاكر اتحظر تلقائى')
 playSound('fail')
 // هنا هنبعتلك انت كادمن + نبلغ الشرطه + نحظر اليوزر
 // supabase.from('bans').insert({user_id: hackerId, reason: 'محاولة اختراق'})
@@ -143,11 +143,11 @@ setMessages(prev => prev.map(m => m.id === editingMsgId? {...m, text: editText, 
 setEditingMsgId(null)
 playSound('goldDrop')
 }
-// 12. دالة الترجمة مصري <> مغربي <> انجليزي
+// 12. دالة الترجمة مصرى <> مغربى <> انجليزى
 const translateMsg = async (text, toLang) => {
 // مثال: هتربطها بـ Google Translate API او MyMemory بعدين
-// دلوقتي هنعملها فايك عشان نجرب
-const map = {'ازيك ياقمر': 'كي داير يا قمر بالمغربي', 'بحبك': 'كنبغيك'}
+// دلوقتى هنعملها فايك عشان نجرب
+const map = {'ازيك ياقمر': 'كى داير يا قمر بالمغربى', 'بحبك': 'كنبغيك'}
 return map[text] || text + ` [مترجم لـ ${toLang}]`
 }
 // 13. ستايل الكتابة بالنار
@@ -174,7 +174,7 @@ return
 setGeneratingDream(true)
 playSound('vinyl') // صوت اسطوانه
 try{
-// انت قايل المفاتيح مربوطه خلاص
+// انت قايل المفاتيح مربوطة خلاص
 const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/luma-generate`, {
 method: 'POST',
 headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`},
@@ -182,7 +182,7 @@ body: JSON.stringify({prompt: dreamText, user_id: user.id})
 });
 const data = await res.json()
 setDreamVideoUrl(data.video_url) // Luma هترجع لينك الفيديو
-// نخزن الحلم في السيرفر حتى لو اتمسح من عنده
+// نخزن الحلم فى السيرفر حتى لو اتمسح من عنده
 await supabase.from('dreams').insert({user_id: user.id, text: dreamText, video_url: data.video_url})
 playSound('goldDrop')
 } catch(err){
@@ -213,7 +213,7 @@ video_icon: 'https://cdn.freesound.org/previews/323/323574_4813298-lq.mp3', // �
 ringtone: 'https://cdn.freesound.org/previews/270/270331_5123856-lq.mp3', // رنه الموبايل الملكي
 notif_in: 'https://cdn.freesound.org/previews/254/254316_4448315-lq.mp3', // اشعار داخل
 notif_out: 'https://cdn.freesound.org/previews/254/254316_4448315-lq.mp3', // اشعار خارج
-ringtone: 'https://انسخ_الرابط_بتاعك_هنا.mp3', // رنة التخ الملكي
+ringtone: 'https://انسخ_الرابط_بتاعك_هنا.mp3', // رنة التخ الملكى
 recording: '', typing: '', send: '', open: '', fail: '', success: '',
 call_icon: '', video_icon: '', ringtone: '', notif_in: '', notif_out: ''
 });
@@ -246,11 +246,11 @@ const days = data.days_left || 0
 setDaysLeft(days)
 // التاج والشارة الذكية "تخ"
 if (days <= 0) {
-setBadgeStatus('hidden') // خلص = اختفي
+setBadgeStatus('hidden') // خلص = اختفى
 } else if (days <= 10) {
-setBadgeStatus('silver') // فاضل 10 ايام او اقل = فضي تحذير 
+setBadgeStatus('silver') // فاضل 10 ايام او اقل = فضة تحذير 
 } else {
-setBadgeStatus('gold') // شغال = دهبي
+setBadgeStatus('gold') // شغال = دهبى
 }
 setSounds(data.sounds || sounds)
 }
@@ -263,7 +263,7 @@ const askMetal = async () => {
 if(!metalMsg.trim()) return
 setMetalReply('ميتال بيكتب...')
 playSound('typing')
-// هنا بتكلم API بتاعي
+// هنا بتكلم API بتاعى
 try {
 const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/metal`, {
 method: 'POST',
@@ -279,13 +279,13 @@ playSound('fail')
 // صفحة تسجيل الدخول
 if(page==='login' ||!user) return (
 <span>{user.name}</span>
-{/* التاج بيقلب فضي لو فاضل 10 ايام */}
+{/* التاج بيقلب فضى لو فاضل 10 ايام */}
 <span style={{
 marginLeft:5, 
 fontSize:20, 
 color: badgeStatus === 'gold' ? 'gold' : 'silver'
 }}>👑</span>
-{/* الشارة تختفي لو خلصت، تبقى فضي لو فاضل 10 ايام */}
+{/* الشارة تختفى لو خلصت، تبقى فضى لو فاضل 10 ايام */}
 {badgeStatus !== 'hidden' && 
 <span style={{
 marginLeft:5, 
@@ -296,12 +296,12 @@ title: badgeStatus === 'silver' ? `فاضل ${daysLeft} ايام` : ''
 }
 <div style={{...s.page,background:c.bg}}>
 <div style={s.logo}>👑 <span style={{color:c.main}}>Whatsinger</span></div>
-<h3 style={{color:c.main, textAlign:'center'}}>انا المالك الرسمي لتطبيق Whatsinger</h3>
+<h3 style={{color:c.main, textAlign:'center'}}>انا المالك الرسمى لتطبيق Whatsinger</h3>
 <p style={{color:c.main, textAlign:'center'}}>
-What Singer= ماذا يغنى + ماذا ارسل<br/>
+What Singer= ماذا يغنى + بيغنى ايه + ماذا ارسل<br/>
 سجل حلمك او بعتلى ايه بالمصرى
 </p>
-<input style={s.input} placeholder="الايميل" value={email} onChange={e=>setEmail(e.target.value)} />
+<input style={s.input} placeholder="ايميلك او رقمك" value={email} onChange={e=>setEmail(e.target.value)} />
 <input style={s.input} placeholder="الباسوورد" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
 <button style={s.btn} onClick={()=>supabase.auth.signInWithPassword({email,password})}>دخول</button>
 <button style={s.btnOutline} onClick={()=>supabase.auth.signUp({email,password})}>حساب جديد - 7 ايام مجانا</button>
@@ -340,7 +340,7 @@ onChange={e=>setMetalMsg(e.target.value)}
 )
 // الصفحة الرئيسية بعد الدخول - سطر 118
 if(currentPage==='main'){
-const isRoyalQueen = false; // false = رجالي، true = حريمي
+const isRoyalQueen = false; // false = رجالى، true =حريمى
 return (
 <div style={{background:'#0b0f1a', minHeight:'100vh', color:'#fff', paddingBottom:70}}>
 <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px', borderBottom:'2px solid #FFD700'}}>
@@ -349,13 +349,13 @@ return (
 </div>
 <div style={{padding:'16px'}}>
 <h3 style={{color:'#FFD700'}}>مرحباً يا {isRoyalQueen ? 'ملكة' : 'ملك'} 👑</h3>
-<p>القصر الدهبي بتاعك جاهز</p>
+<p>القصر الدهبى بتاعك جاهز</p>
 </div>
 {/* الاعدادات - اوعى تمسح دي سطر 150 */}
 <div style={{marginTop:20}}>
 <button style={{background:'#ff3b30', color:'#fff', border:'none', padding:'10px 20px', borderRadius:8, cursor:'pointer'}}>خروج</button>
 </div>
-{/* الشريط السفلي التاج الملكي */}
+{/* الشريط السفلى التاج الملكى */}
 <div style={isRoyalQueen ? s.bottomNavQueen : s.bottomNavKing}>
 <button style={currentPage==='chats' ? s.navActive : s.navBtn}>💬 chats</button>
 <button style={currentPage==='feed' ? s.navActive : s.navBtn}>📰 feed</button>
@@ -365,7 +365,7 @@ return (
 </div>
 )
 }
-// ستايلات القصر الملكي - حط ده تحت الـ return على طول
+// ستايلات القصر الملكى - حط ده تحت الـ return على طول
 const s = {
 bottomNavKing: {
 position: 'fixed',
@@ -451,7 +451,7 @@ const renderChats = () => (
 {eyeState === 'failed' && <span style={{fontSize:14}}>😭</span>}
 <span>{m.time}</span>
 </div>
-<button style={s.transBtn}>ترجمة</button>
+<button style={s.transBtn}>ترجمة لغتى لهجتى</button>
 </div>
 <div ref={messagesEndRef} />
 </div>
@@ -483,11 +483,11 @@ onTouchEnd={stopAudioRecord}
 const sendMsg = () => {
 if(!input.trim()) return
 playSound('typing')
-setEyeState('sending') // 1. 😐 مغمضة + صح رمادي 1
+setEyeState('sending') // 1. 😐 مغمضة + صح رمادى 1
 const msg = {id:Date.now(), text: CryptoJS.AES.encrypt(input, 'royal-key-2026').toString(), type:'text', time:new Date().toLocaleTimeString('ar-EG'), status: 'sending'}
 setMessages(prev => [...prev, msg])
 setInput('')
-setTimeout(()=>{ // 2. 😉 صح رمادي 2
+setTimeout(()=>{ // 2. 😉 صح رمادى 2
 setEyeState('sent')
 playSound('goldDrop') // ترنجرجر
 }, 300)
@@ -523,7 +523,7 @@ const  {  data  } = supabase. storage . from ( 'voice-messages' ) . getPublicUrl
 setMessages ( prev => [ ...prev, {
 id :Date. now ( ) ,
 نص : بيانات. عنوان URL العام ،
-النوع : 'صوتي' ،
+النوع : 'صوتى' ،
 الوقت : تاريخ جديد ( ) . toLocaleTimeString ( 'ar-EG' )
 } ] )
 playSound ( 'goldDrop' ) ; // بدل النجاح
@@ -584,7 +584,7 @@ if(page==='settings') return (
 </div>
 ))}
 <h3 style={{color:c.main, marginTop:30}}>الاشتراك في الشارة الذهبية</h3>
-<p style={{color:'#fff'}}>شهري 10$ | اسبوعي 5$ | اول 7 ايام مجانا</p>
+<p style={{color:'#fff'}}>شهرى 10$ | اسبوعى 5$ | اول 7 ايام مجانا</p>
 <button style={s.btn} onClick={()=>alert('اربط بوابة الدفع هنا')}>اشترك الآن</button>
 {isAdmin && (
 <button style={s.btn} onClick={()=>{setPage('adminVerify'); loadVerifications()}}>
