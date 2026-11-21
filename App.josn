@@ -67,6 +67,16 @@ const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
 const [activeTab, setActiveTab] = useState('chats')
 const [eyeState, setEyeState] = useState('normal')
+const [isBored, setIsBored] = useState(false)
+const [lastActivity, setLastActivity] = useState(Date.now())
+// العيون بتزهق لو محدش بعت رسالة لمدة 30 ثانية
+useEffect(() => {
+const timer = setInterval(() => {
+if(Date.now() - lastActivity > 30000) setIsBored(true)
+else setIsBored(false)
+}, 5000)
+return () => clearInterval(timer)
+}, [lastActivity])
 // 1. States جديدة فوق خالص مع باقى الuseState
 const [users, setUsers] = useState([]) // كل الناس
 const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقة
@@ -645,6 +655,7 @@ setEyeState('failed') // 5. 😭 عياط
 playSound('eyeCry')
 })
 }
+{isBored && <span>🥱 العيون زهقت ونامت 😴</span>}
 const  startAudioRecord = غير متزامن  ( ) => {
 setIsRecording ( true )
 تشغيل الصوت ( 'الميكروفون' )
