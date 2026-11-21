@@ -5,22 +5,22 @@ import CryptoJS from 'crypto-js' // قفل ملكى للرسايل
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 const getZodiac = (dateStr) => {
-  if(!dateStr) return '';
-  const d = new Date(dateStr);
-  const day = d.getDate();
-  const month = d.getMonth() + 1;
-  if((month==3 && day>=21) || (month==4 && day<=19)) return 'الحمل ♈';
-  if((month==4 && day>=20) || (month==5 && day<=20)) return 'الثور ♉';
-  if((month==5 && day>=21) || (month==6 && day<=20)) return 'الجوزاء ♊';
-  if((month==6 && day>=21) || (month==7 && day<=22)) return 'السرطان ♋';
-  if((month==7 && day>=23) || (month==8 && day<=22)) return 'الأسد ♌';
-  if((month==8 && day>=23) || (month==9 && day<=22)) return 'العذراء ♍';
-  if((month==9 && day>=23) || (month==10 && day<=22)) return 'الميزان ♎';
-  if((month==10 && day>=23) || (month==11 && day<=21)) return 'العقرب ♏';
-  if((month==11 && day>=22) || (month==12 && day<=21)) return 'القوس ♐';
-  if((month==12 && day>=22) || (month==1 && day<=19)) return 'الجدي ♑';
-  if((month==1 && day>=20) || (month==2 && day<=18)) return 'الدلو ♒';
-  return 'الحوت ♓';
+if(!dateStr) return '';
+const d = new Date(dateStr);
+const day = d.getDate();
+const month = d.getMonth() + 1;
+if((month==3 && day>=21) || (month==4 && day<=19)) return 'الحمل ♈';
+if((month==4 && day>=20) || (month==5 && day<=20)) return 'الثور ♉';
+if((month==5 && day>=21) || (month==6 && day<=20)) return 'الجوزاء ♊';
+if((month==6 && day>=21) || (month==7 && day<=22)) return 'السرطان ♋';
+if((month==7 && day>=23) || (month==8 && day<=22)) return 'الأسد ♌';
+if((month==8 && day>=23) || (month==9 && day<=22)) return 'العذراء ♍';
+if((month==9 && day>=23) || (month==10 && day<=22)) return 'الميزان ♎';
+if((month==10 && day>=23) || (month==11 && day<=21)) return 'العقرب ♏';
+if((month==11 && day>=22) || (month==12 && day<=21)) return 'القوس ♐';
+if((month==12 && day>=22) || (month==1 && day<=19)) return 'الجدي ♑';
+if((month==1 && day>=20) || (month==2 && day<=18)) return 'الدلو ♒';
+return 'الحوت ♓';
 };
 <style>{`@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }`}</style>
 @keyframes glow {
