@@ -1,0 +1,880 @@
+import React, { useState, useEffect, useRef } from 'react'
+import { supabase } from './supabase'
+export default function App() {
+const [user, setUser] = useState(null)
+const[page, setPage]= useState('login')
+const [activeTab, setActiveTab] = useState('chats')
+const [email, setEmail] = useState('')
+const [password, setPassword] = useState('')
+const [messages, setMessages] = useState([])
+const [input, setInput] = useState('')
+const [isRecording, setIsRecording] = useState(false)
+const [soundsEnabled, setSoundsEnabled] = useState(false)
+const [sounds, setSounds] = useState({
+mic: '', recording: '', typing: '', send: '', open: '', fail: '', success: '',
+call_icon: '', video_icon: '', ringtone: '', notif_in: '', notif_out: ''
+})
+const getZodiac = (day, month) => {
+if ((month==3 && day>=21) || (month==4 && day<=19)) return 'الحمل ♈'
+if ((month==4 && day>=20) || (month==5 && day<=20)) return 'الثور ♉'
+if ((month==5 && day>=21) || (month==6 && day<=20)) return 'الجوزاء ♊'
+if ((month==6 && day>=21) || (month==7 && day<=22)) return 'السرطان ♋'
+if ((month==7 && day>=23) || (month==8 && day<=22)) return 'الأسد ♌'
+if ((month==8 && day>=23) || (month==9 && day<=22)) return 'العذراء ♍'
+if ((month==9 && day>=23) || (month==10 && day<=22)) return 'الميزان ♎'
+if ((month==10 && day>=23) || (month==11 && day<=21)) return 'العقرب ♏'
+if ((month==11 && day>=22) || (month==12 && day<=21)) return 'القوس ♐'
+if ((month==12 && day>=22) || (month==1 && day<=19)) return 'الجدي ♑'
+if ((month==1 && day>=20) || (month==2 && day<=18)) return 'الدلو ♒'
+return 'الحوت ♓'
+}
+}
+// حط الدالتين هنا
+useEffect(() => {
+supabase.auth.getSession().then(({ data: { session } }) => {
+if (session) {
+setUser(session.user)
+setPage('main')
+setActiveTab('chats')
+}
+})
+}, [])
+// 1- العد التنازلي للشارة الذهبية
+const [goldBadgeTimer, setGoldBadgeTimer] = useState(60) // 60 ثانية للشارة
+useEffect(() => {
+const t = setInterval(() => {
+setGoldBadgeTimer(prev => prev > 0 ? prev - 1 : 0)
+}, 1000)
+return () => clearInterval(t)
+}, [])
+// 2- عداد المستخدمين
+const [onlineUsers, setOnlineUsers] = useState(1)
+// 3- حالات العيون
+const [eyeState, setEyeState] = useState('closed') // closed, blinking, crying, laughing, sleeping, yawning
+const [messageStatus, setMessageStatus] = useState('none') // none, sent, delivered, read
+// 4- السبيكة
+const [showGoldIngot, setShowGoldIngot] = useState(false)
+// الأصوات
+const playSound = (type) => {
+// هنحط هنا ملفات الصوت بعدين
+console.log('صوت:', type)
+// مثال: new Audio('/sounds/'+type+'.mp3').play()
+}
+// لما تبعت رسالة
+const sendMessage = () => {
+setMessageStatus('sent')
+setEyeState('blinking')
+playSound('send')
+// محاكاة عدم وصول الرسالة
+setTimeout(() => {
+setMessageStatus('failed')
+setEyeState('crying')
+playSound('cry')
+}, 2000)
+}
+// لما تعيد الإرسال والرسالة توصل
+const resendMessage = () => {
+setMessageStatus('delivered')
+setEyeState('laughing')
+playSound('laugh_wipe')
+setTimeout(() => {
+setEyeState('blinking')
+}, 2000)
+}
+// لما الرسالة تتفتح
+const onMessageRead = () => {
+setEyeState('open')
+playSound('open_eye')
+}
+// لو محدش فاتح - العيون تنام
+useEffect(() => {
+if (messageStatus === 'none' && onlineUsers <= 1) {
+const sleepTimer = setTimeout(() => {
+setEyeState('yawning')
+playSound('yawn')
+setTimeout(() => setEyeState('sleeping'), 2000)
+}, 10000) // بعد 10 ثواني من غير رسائل تنام
+return () => clearTimeout(sleepTimer)
+}
+}, [messageStatus, onlineUsers])
+// سقوط السبيكة
+const dropGoldIngot = () => {
+setShowGoldIngot(true)
+playSound('gold_drop') // صوت رنة الدهب
+setTimeout(() => setShowGoldIngot(false), 2000)
+}
+const handleSendOtp = async () => {
+if(!email){ alert('اكتب الايميل او رقم الهاتف يا امبراطور'); return }
+const loginEmail = email.includes('@') ? email : email + '@whatsinger.com';
+try {
+const { error } = await supabase.auth.signInWithOtp({ email: loginEmail });
+if(error) console.log('supabase غلط، بس هنكمل');
+} catch(e) { console.log('دخول اوفلاين'); }
+alert(' بعتنا الكود على الجيميل،او ابل او اكتب اي كود هنا عشان التجربة');
+setPage('verify');
+}
+const handleVerify = async (code) => {
+const { data, error } = await supabase.auth.verifyOtp({
+email: email,
+token: code,
+type: 'email'
+})
+if (error) return alert('الكود غلط')
+setUser(data.user)
+setPage('main')
+setActiveTab('chats')
+}
+const handleLogin = async () => {
+if (!email) return alert('اكتب الايميل يا امبراطور')
+const { error } = await supabase.auth.signInWithPassword({ email, password })
+if (error) return alert(error.message)
+setPage('main')
+setActiveTab('chats')
+}
+const handleSignup = async () => {
+if (!email || !password) return alert('اكتب الايميل والباسورد')
+const { data, error } = await supabase.auth.signUp({ email, password })
+if (error) return alert(error.message)
+setUser(data.user)
+setPage('main')
+setActiveTab('chats')
+}
+// توحيد الدخول - خانة واحدة
+const getLoginEmail = () => {
+if(!email) return null;
+return email.includes('@') ? email : email + '@whatsinger.com';
+}
+const handleVerify = async (code) => {
+if(!code) return alert('اكتب الكود يا امبراطور');
+// للتجربة: أي كود بيعدي، و supabase هيفضل موجود
+const loginEmail = getLoginEmail();
+try {
+await supabase.auth.verifyOtp({ email: loginEmail, token: code, type: 'email' });
+} catch(e) {}
+setUser({ email: loginEmail });
+setPage('main');
+setActiveTab('chats');
+}
+const handleLogin = async () => {
+if(!email) return alert('اكتب الايميل يا امبراطور يا امبراطور');
+const loginEmail = getLoginEmail();
+try {
+await supabase.auth.signInWithPassword({ email: loginEmail, password: password || '123456' });
+} catch(e) {}
+setPage('main');
+setActiveTab('chats');
+}
+const handleSignup = async () => {
+if(!email || !password) return alert('اكتب الايميل والباسورد');
+const loginEmail = getLoginEmail();
+try {
+const { data } = await supabase.auth.signUp({ email: loginEmail, password });
+if(data?.user) setUser(data.user);
+} catch(e) {}
+setUser({ email: loginEmail });
+setPage('main');
+setActiveTab('chats');
+}
+// الدخول بالرقم هو الأساسي - هنزود مش هنغير
+const handlePhoneAuth = async () => {
+if (!form?.phone || !form?.password) return alert('اكتب رقم الهاتف والباسورد يا امبراطور')
+// لو كتب اسمه بس، نكملها احنا
+const fakeEmail = form.phone + '@whatsinger.com'
+// جرب دخول الأول
+let { error } = await supabase.auth.signInWithPassword({ email: fakeEmail, password: form.password })
+// لو ملهوش حساب، اعمله حساب جديد بنفس الرقم
+if (error) {
+const { data, error: signError } = await supabase.auth.signUp({ email: fakeEmail, password: form.password })
+if (signError) return alert(signError.message)
+setUser(data.user)
+}
+setPage('main')
+setActiveTab('chats')
+}
+// لو كتب اسمه في الايميل، نكمله احنا
+const getEmailFinal = () => {
+if (!email) return ''
+if (email.includes('@')) return email
+return email + '@whatsinger.com'
+}
+const handleCreate = handlePhoneAuth
+const [ isAdmin, setIsAdmin] = useState(false)
+const [showCreate, setShowCreate] = useState(false)
+const [ messageCount, setMessageCount] = useState(0)
+const [ isBored, setIsBored] = useState(false)
+const [ appCode, setAppCode] = useState('<h1>مرحبا</h1>')
+const [form, setForm] = useState({ 
+name: 'راجاف الحسينى', 
+password: '', 
+phone: '', 
+whatsingerEmail: 'rajafelhossine@whatsinger.com', 
+gmail: '', 
+birthDate: '1987-07-14' 
+})
+useEffect(()=>{
+if(messageCount > 50){
+setIsBored(true);
+setTimeout(()=>setIsBored(false), 5000);
+}
+}, [messageCount])
+const updateAppCode = (code) => setAppCode(code)
+const c = { bg: '#111', text: '#fff', main: 'gold', dark: '#222' };
+const s = {
+page: { minHeight: '100vh', padding: 20, background: '#111' },
+header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+input: { width: '100%', padding: 11, borderRadius: 8, border: 'none', background: '#2a3942', color: 'white', marginTop: 8, boxSizing: 'border-box' },
+label: { fontSize: 12, opacity: 0.7, marginTop: 12, display: 'block', textAlign: 'right', color: 'white' },
+btn: { width: '100%', padding: 12, marginTop: 15, borderRadius: 8, border: 'none', background: '#00a884', color: 'white', fontWeight: 'bold', cursor: 'pointer' },
+logo: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: 'gold', margin: '20px 0' },
+backBtn: { background: 'transparent', border: '1px solid gold', color: 'gold', padding: '6px 12px', borderRadius: 6, cursor: 'pointer' },
+metalBtn: { width: '100%', padding: 10, background: '#222', border: '1px dashed gold', color: 'gold', borderRadius: 10, marginTop: 10 },
+modal: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 999 },
+modalContent: { width: '90%', maxWidth: 400, padding: 20, borderRadius: 15, border: '1px solid gold' },
+card: { padding: 15, background: '#222', borderRadius: 10, border: '1px solid #333' },
+iconBtn: { flex: 1, padding: 10, background: '#222', border: '1px solid gold', color: 'gold', borderRadius: 10 }
+};
+const [showMetal, setShowMetal] = useState(false)
+const [metalMsg, setMetalMsg] = useState('')
+const [metalReply, setMetalReply] = useState('')
+const messagesEndRef = useRef(null)
+let mediaRecorder = null
+let audioChunks = []
+const ADMIN_ID = '00000000-0000-0000-0000-000000000000'
+// 1. حالة الاشتراك الملكي
+const [subscription, setSubscription] = useState({
+status: 'none', // none | gold | silver
+plan: null, // 'weekly' | 'monthly'
+startDate: null,
+endDate: null
+});
+// 2. حالة الزهقان والعداد
+const [daysLeft, setDaysLeft] = useState(0);
+// 3. دالة الدفع
+const subscribe = (plan) => {
+const days = plan === 'weekly'? 7 : 30;
+const price = plan ==='weekly'? 5 : 10;
+alert(`جارى الدفع ${price}$... اول 7 ايام مجانا 👑`)
+const start = new Date();
+const end = new Date();
+end.setDate(end.getDate() + days);
+setSubscription({status: 'gold', plan: plan, startDate: start, endDate: end})
+}
+// 4. فحص الانذار والزهقان
+useEffect(()=>{
+if(subscription.endDate){
+const now = new Date();
+const diff =subscription.endDate - now;
+const days = Math.ceil(diff / (1000*60*60*24));
+setDaysLeft(days > 0 ? days : 0);
+if(days <= 10 && days > 0 && subscription.status === 'gold'){
+setSubscription(prev => ({...prev, status: 'silver'}))
+alert('باقي 10 ايام! التاج اصبح فضي 🥈')
+}
+if(days <= 0 && subscription.status !== 'none'){
+setSubscription({status: 'none', plan: null, startDate: null, endDate: null})
+alert('انتهت الشارة. التاج اصبح فضي 🥈')
+}
+}
+if(messageCount > 50) {
+setIsBored(true);
+setTimeout(()=>setIsBored(false), 5000)
+setMessageCount(0)
+}
+}, [subscription, messageCount])
+// 5. تحميل المستخدم
+useEffect(()=>{
+supabase.auth.getUser().then(({ data }) => {
+setUser(data.user)
+if(data.user) {
+setPage('main')
+loadUserData(data.user.id)
+if(data.user.id === ADMIN_ID)
+setIsAdmin(true)
+}
+})
+}, [])
+const loadUserData = async (id) => {
+const { data } = await supabase.from('profiles').select('*').eq('id', id).single()
+if(data){
+setDaysLeft(data.days_left || 0)
+setBadgeStatus(data.badge_status || 'none')
+setSounds(data.sounds || sounds)
+}
+const askMetal = async () => {
+if(!metalMsg.trim()) return;
+setMessageCount(prev => prev + 1)
+setMetalReply('ميتال بيكتب...');
+playSound('typing');
+}
+const sendMetal = async () => {
+if(!metalMsg.trim()) return;
+try {
+const { data, error } = await supabase.from('messages').insert([{ content: metalMsg }]);
+if(error) alert(error.message);
+else {
+setMetalMsg('');
+setMetalReply('تم الارسال!');
+}
+} catch(e) {
+alert(e.message);
+setMessageCount(prev => prev + 1)
+}
+}
+// صفحة منشئ التطبيقات والألعاب 
+if(page==='appBuilder') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<button onClick={()=>setPage('settings')} style={s.backBtn}>رجوع</button>
+<h2 style={{color:c.text}}>منشى التطبيقات والالعاب</h2>
+<button onClick={()=>updateAppCode(appCode)} style={s.backBtn}>تحديث</button>
+</div>
+<p style={{color:'gold', textAlign:'center', fontWeight:'bold'}}>تطبيق واتسنجر वाॅट्ससिंगर - राजव 👑</p>
+<div style={{display: 'flex', height: '85vh'}}>
+<textarea 
+value={appCode}
+onChange={(e)=>setAppCode(e.target.value)}
+style={{width:'50%', background:'#000', color:'#0f0', padding:10}}
+placeholder="اكتب كود HTML هنا"
+/>
+<iframe srcDoc={appCode} style={{width:'50%', background:'white'}} />
+</div>
+</div>
+)
+// صفحة تسجيل الدخول
+if(page==='login' ) return (
+<div style={{...s.page,background:c.bg}}>
+<div style={s.logo}>👑 <span style={{color:c.main}}>Whatsinger</span> - राजव वाॅट्ससिंगर 👑</div>
+<h3 style={{color:c.main, textAlign:'center'}}>انا المالك الرسمى لتطبيق Whatsinger</h3>
+<p style={{color:c.main, textAlign:'center'}}>
+What Singer= ماذا يغنى او بيغنى ايه  ماذا ارسل<br/>
+سجل حلمك او بعتلى ايه بالمصرى
+</p>
+<input style={s.input} placeholder="ايميلك او رقمك" value={email.phone} onChange={e=>setEmail(e.target.value)} />
+<input style={s.input} placeholder="الباسورد" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
+// زرار الدخول
+<button style={s.btn} onClick={async () => {
+if(!email){ alert('اكتب ايميلك يا امبراطور'); return }
+try {
+const { error } = await supabase.auth.signInWithPassword({email, password});
+if(error){ alert('الايميل او الباسورد غلط'); return; }
+} catch(e) { console.log('دخول اوفلاين'); }
+setUser({email: email});
+setPage('main');
+setActiveTab('chats');
+setIsLoggedIn(true);
+}}>دخول</button>
+<button style={s.btnOutline} onClick={async () => {
+let raw = email.trim();
+if(!raw){ alert('اكتب ايميلك او رقم تليفونك يا امبراطور'); return }
+if(!password || password.trim().length < 4){ alert('الباسورد لازم 4 حروف على الأقل'); return }
+let finalEmail = raw;
+if(raw.includes('@')){
+finalEmail = raw.toLowerCase();
+} else {
+let cleanPhone = raw.replace(/[\s\-\+]/g, '');
+if(cleanPhone.startsWith('20')) cleanPhone = cleanPhone.slice(2);
+if(cleanPhone.startsWith('0')) cleanPhone = cleanPhone.slice(1);
+finalEmail = cleanPhone + '@phone.com';
+}
+try {
+const { error } = await supabase.auth.signInWithPassword({email: finalEmail, password});
+await supabase.auth.signUp({email, password});
+} catch(e) {
+console.log('حساب اوفلاين');
+}
+setUser({email: email});
+setPage('create');
+setIsLoggedIn(true);
+}}>حساب جديد - 7 ايام مجانا</button>
+<button style={s.btnOutline} onClick={() => setShowMetal(true)}>
+🤖 ميتال المبرمج الذكي
+</button>
+<p style={{color:c.main, textAlign:'center', fontSize:12}}>
+صنع بواسطة راجاف الحسينى
+</p>
+</div>
+)
+// مودال ميتال المبرمج الذكي
+if(showMetal) return (
+<div style={s.modal}>
+<div style={{...s.modalContent, background:c.bg, borderColor:c.dark}}>
+<h3 style={{color:c.main}}>🤖 ميتال المبرمج الذكى</h3>
+<p style={{color:'#fff', fontSize:12}}>صنع بواسطة راجاف الحسينى</p>
+<textarea
+style={{...s.input, height:80}}
+placeholder="اسألنى أى حاجة... كتابة، فويس، صورة"
+value={metalMsg}
+onChange={e=>setMetalMsg(e.target.value)}
+/>
+<button style={s.btn} onClick={askMetal}>اسأل ميتال</button>
+<div style={{...s.card, marginTop:10, maxHeight:200, overflowY:'auto'}}>
+<p style={{color:c.main}}>رد ميتال:</p>
+<p style={{color:'#fff'}}>{metalReply}</p>
+</div>
+<div style={{display:'flex', gap:10, marginTop:10}}>
+<button style={s.iconBtn} onClick={()=>alert('تسجيل فويس')}>🎤</button>
+<button style={s.iconBtn} onClick={()=>alert('رفع صورة')}>🖼️</button>
+<button style={s.btnOutline} onClick={()=>setShowMetal(false)}>اغلاق</button>
+</div>
+</div>
+</div>
+)
+// الصفحة الرئيسية بعد الدخول
+if(page==='main') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<h2>{activeTab==='chats' ? 'الدردشات' : activeTab==='feed' ? 'الرئيسية' : activeTab==='groups' ? 'المجموعات' : 'الحالات'}</h2>
+<div onClick={()=>setPage('settings')}>⚙️</div>
+</div>
+<div style={s.content}>
+{activeTab==='chats' && <p style={{color:'#fff', textAlign:'center'}}>مفيش محادثات لسه</p>}
+{activeTab==='feed' && <p style={{color:'#fff', textAlign:'center'}}>مفيش منشورات لسه</p>}
+{activeTab==='groups' && <p style={{color:'#fff', textAlign:'center'}}>مفيش مجموعات لسه</p>}
+{activeTab==='story' && <p style={{color:'#fff', textAlign:'center'}}>مفيش حالات لسه</p>}
+</div>
+<div style={s.bottomNav}>
+<button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>
+🏠<br/>الرئيسية
+</button>
+<button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>
+💬<br/>الشات
+</button>
+<button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>
+👥<br/>المجموعات
+</button>
+<button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>
+📸<br/>الاستورى
+</button>
+</div>
+</div>
+)
+// صفحة الشات داخل الصفحة الرئيسية
+const renderChats = () => (
+<>
+<div style={s.messages}>
+<div style={s.dateSep}>الجمعة 1 مايو 2026</div>
+{isBored &&
+<div style={{color:'gold', textAlign:'center', padding:10}}>
+يوووه هو انتو مبتزهقوش 😩 متنامو بقى زهقتونى الله 
+</div>
+}
+{messages.map(m=>(
+<div key={m.id} style={s.msgWrap}>
+<div style={s.msg}>
+<div style={{display:'flex', justifyContent:'space-between', fontSize:12}}>
+<span>👑 راجاف الحسينى </span>
+<span>باقى {daysLeft} يوم</span>
+</div>
+{m.type==='text' && <div style={{marginTop:5}}>{m.text}</div>}
+{m.type==='audio' && <audio controls src={m.text} style={{width:'100%', marginTop:5}} />}
+</div>
+</div>
+))}
+// حط ده جوه الـ return بتاع الشات
+<div style={{textAlign: 'center'}}>
+{/* العد التنازلي للشارة */}
+<div>الشارة الذهبية بعد: {goldBadgeTimer} ثانية ⏳</div>
+{/* العيون */}
+<div style={{fontSize: 50}}>
+{eyeState === 'closed' && '😑'}
+{eyeState === 'blinking' && '😳'}
+{eyeState === 'open' && '🤩'}
+{eyeState === 'crying' && '😭'}
+{eyeState === 'laughing' && '🥹 مسحت دموعها'}
+{eyeState === 'sleeping' && '😴'}
+{eyeState === 'yawning' && '🥱'}
+</div>
+<div>عيون اونلاين: {onlineUsers} 👀</div>
+{/* السبيكة */}
+{showGoldIngot && (
+<div style={{animation: 'drop 1s', fontSize: 40}}>🪙 سبيكة دهب!</div>
+)}
+<button onClick={sendMessage}>ابعت رسالة</button>
+<button onClick={resendMessage}>ابعتها تانى</button>
+<button onClick={onMessageRead}>الرسالة اتفتحت</button>
+<button onClick={dropGoldIngot}>نزل سبيكة دهب</button>
+</div>
+<div style={{display:'flex', alignItems:'center', gap:6, marginTop:5, flexWrap:'wrap'}}>
+{/* علامة صح رمادي واحدة - انها اتبعتت */}
+<span style={{color:'#999', fontSize:12}}>✓</span>
+{/* العيون */}
+<Eyes status={m.status || (m.seen ? 'seen' : m.failed ? 'failed' : 'sent')} />
+{/* وقت الارسال */}
+<span style={{fontSize:11, color:'#aaa'}}>{m.time}</span>
+{/* تعديل الرسالة - بتفضل على طول مش بوقت */}
+<button style={{background:'none', border:'none', color:'#aaa', fontSize:11}} onClick={()=>{ const t = prompt('عدل رسالتك', m.text); if(t) editMsg(m.id, t); }}>تعديل الرسالة</button>
+{/* زرار الترجمة */}
+<button style={s.transBtn}>ترجمة لغتى لهجتى قريباً</button>
+{/* علامتين صح - رمادي قبل الفتح، ازرق بعد الفتح */}
+<span style={{color: m.seen ? '#2ea5ff' : '#999', fontSize:12, fontWeight:'bold'}}>
+{m.seen ? '✓✓' : '✓✓'}
+</span>
+</div>
+<div ref={messagesEndRef} />
+</div>
+<div style={s.inputBar}>
+<div style={{display:'flex', gap:10}}>
+<span onClick={()=>alert('رفع ملف')}>📎</span>
+<span onClick={()=>alert('كاميرا')}>📷</span>
+</div>
+<input
+style={s.inputChat}
+placeholder="اكتب على السبيكة الموثقة..."
+value={input}
+onChange={e=>setInput(e.target.value)}
+onKeyDown={e=>e.key==='Enter'&&sendMsg()}
+/>
+<button onClick={()=>alert('سجل الحلم')} style={s.iconBtn}>🎬</button>
+<button onClick={sendMsg} style={s.sendBtn}>➤</button>
+<span 
+onMouseDown={startAudioRecord} 
+onMouseUp={stopAudioRecord}
+onTouchStart={startAudioRecord}
+onTouchEnd={stopAudioRecord}
+>
+🎤
+</span>
+</div>
+</>
+)
+const sendMsg = () => {
+if(!input.trim()) return
+playSound('typing')
+const msg = {
+id:Date.now(),
+text:input,
+type:'text',
+time:new Date().toLocaleTimeString('ar-EG'),
+status:'sent'
+}
+setMessages([...messages, msg])
+setInput('')
+playSound('send')
+setTimeout(()=>messagesEndRef.current?.scrollIntoView({behavior:'smooth'}), 100)
+}
+const mediaRecorderRef = useRef(null);
+const audioChunksRef = useRef([]);
+const startAudioRecord = async () => {
+setIsRecording(true)
+playSound('recording')
+try {
+const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+mediaRecorderRef.current = new MediaRecorder(stream)
+audioChunksRef.current = []
+mediaRecorderRef.current.ondataavailable = e => audioChunksRef.current.push(e.data)
+mediaRecorderRef.current.onstop = async () => {}
+const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+const fileName = `${user?.id || 'guest'}-${Date.now()}.webm`
+await supabase.storage.from('voice-messages').upload(fileName, blob)
+const { data } = supabase.storage.from('voice-messages').getPublicUrl(fileName)
+setMessages(prev => [...prev, {
+id: Date.now(),
+text: data.publicUrl,
+type: 'audio',
+time: new Date().toLocaleTimeString('ar-EG'),
+status: 'sent',
+seen: false
+}])
+playSound('success')
+}
+mediaRecorderRef.current.start()
+} catch(e) {
+alert('مش قادر افتح المايك')
+setIsRecording(false)
+}
+}
+const stopAudioRecord = () => {
+if(mediaRecorderRef.current && isRecording){
+mediaRecorderRef.current.stop()
+setIsRecording(false)
+mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop())
+}
+}
+// تعديل return الرئيسي عشان يعرض الشات لما activeTab='chats'
+if(page==='main' && activeTab==='chats') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<div style={{display:'flex', gap:10, alignItems:'center'}}>
+<span className="icon-anim" onClick={()=>playSound('call_icon')}>📞</span>
+<span className="icon-anim" onClick={()=>playSound('video_icon')}>🎬</span>
+<div style={s.m} onClick={()=>setPage('settings')}>P</div>
+</div>
+<div style={{textAlign:'center', flex:1}}>
+<div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:5}}>
+<span>✓</span><span style={{fontWeight:900}}>راجاف الحسينى </span>
+{badgeStatus==='gold' && <span>👑</span>}
+</div>
+<div style={{fontSize:12}}>سبيكة موثقة متصلة - محفوظة</div>
+{new Date().toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+</div>
+<div onClick={()=>setPage('settings')}>⚙️</div>
+</div>
+{renderChats()}
+{renderBottomNav()}
+</div>
+)
+// صفحة الإعدادات
+if(page==='settings') return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<button onClick={()=>setPage('main')} style={s.backBtn}>رجوع</button>
+<h2>الإعدادات</h2>
+<button onClick={()=>setSoundsEnabled(!soundsEnabled)} style={s.soundToggle}>
+{soundsEnabled? '🔊' : '🔇'}
+</button>
+</div>
+<div style={{padding:15, paddingBottom:80}}>
+<h3 style={{color:c.main}}>رفع الأصوات</h3>
+{Object.keys(sounds).map(key=>(
+<div key={key} style={s.soundRow}>
+<span style={{color:c.main}}>{key}</span>
+<input type="file" accept="audio/*" onChange={(e)=>uploadSound(e, key)} />
+{sounds[key] && <span style={{color:'green'}}>✓</span>}
+</div>
+))}
+<h3 style={{color:c.main, marginTop:30}}>الاشتراك في الشارة الذهبية</h3>
+<p style={{color:'#fff'}}>شهري 10$ | اسبوعي 5$ | اول 7 ايام مجانا</p>
+<button style={s.input} onClick={()=>alert('اربط بوابة الدفع هنا')}>اشترك الآن</button>
+{isAdmin && (
+<>
+<button style={s.input} onClick={() => {setPage('adminVerify'); loadVerifications()}}>
+طلبات التحقق من الجنس
+</button>
+<button style={s.input} onClick={() => setPage('appBuilder')}>
+🛠️ منشئ التطبيقات والألعاب
+</button>
+</>
+)}
+<button style={{...s.btnOutline, marginTop:20}} onClick={()=>supabase.auth.signOut()}>
+تسجيل خروج
+</button>
+</div>
+</div>
+)
+const uploadSound = async (e, soundName) => {
+const file = e.target.files[0]
+if(!file) return
+const fileName = `${soundName}-${Date.now()}.mp3`
+const { error } = await supabase.storage.from('sounds').upload(fileName, file)
+if(error) { alert('فشل الرفع: '+error.message); return }
+const { data: urlData } = supabase.storage.from('sounds').getPublicUrl(fileName)
+const newSounds = {...sounds, [soundName]: urlData.publicUrl}
+setSounds(newSounds)
+await supabase.from('profiles').update({sounds: newSounds}).eq('id', user.id)
+playSound(soundName)
+}
+// صفحة التحقق للأدمن
+if(page==='adminVerify' && isAdmin) return (
+<div style={{...s.page, background:c.bg}}>
+<div style={s.header}>
+<button onClick={()=>setPage('settings')} style={s.backBtn}>رجوع</button>
+<h2>طلبات التحقق</h2>
+</div>
+<div style={{padding:15, paddingBottom:80}}>
+{pendingVerifications.length===0 && <p style={{color:'#fff'}}>مفيش طلبات معلقة</p>}
+{pendingVerifications.map(v=>(
+<div key={v.id} style={s.card}>
+<div style={{display:'flex', gap:10, alignItems:'center'}}>
+<img src={v.profiles.avatar_url} style={{width:50,height:50,borderRadius:'50%'}} />
+<div>
+<p style={{color:c.main}}>{v.profiles.username}</p>
+<p style={{color:'#fff', fontSize:12}}>
+{new Date(v.created_at).toLocaleDateString('ar-EG')}
+{subscription.status!== 'none' && 
+<span style={{color: subscription.status==='gold'? 'gold':'silver', fontSize:12}}>
+👑 {daysLeft} يوم
+</span>
+}
+</p>
+</div>
+</div>
+<div style={{display:'flex', gap:10, marginTop:10}}>
+<button style={{...s.input, background:'green', flex:1}}
+onClick={()=>submitVerification(v.id,'male','تم المراجعة')}>ذكر</button>
+<button style={{...s.input, background:'pink', flex:1}}
+onClick={()=>submitVerification(v.id,'female','تم المراجعة')}>أنثى</button>
+</div>
+<button style={{...s.btnOutline, marginTop:5, width:'100%'}}
+onClick={()=>submitVerification(v.id,'unclear','غير واضح')}>غير واضح</button>
+</div>
+))}
+</div>
+</div>
+)
+const loadVerifications = async () => {
+if(!isAdmin) return
+const { data } = await supabase.from('verifications')
+.select('*, profiles!target_user_id(username, avatar_url)')
+.is('result', null)
+.order('created_at', {ascending:false})
+setPendingVerifications(data || [])
+}
+const submitVerification = async (id, result, note) => {
+await supabase.from('verifications')
+.update({result, note})
+.eq('id', id)
+await supabase.from('notifications').insert({
+user_id: id,
+message: `تم التحقق بواسطة إدارة Whatsinger: النتيجة ${result==='male'?'ذكر':'أنثى'}`
+})
+loadVerifications()
+}
+const renderBottomNav = () => (
+<div style={s.bottomNav}>
+<button style={activeTab==='feed'?s.navActive:s.navBtn} onClick={()=>setActiveTab('feed')}>
+🏠<br/>الرئيسية
+</button>
+<button style={activeTab==='chats'?s.navActive:s.navBtn} onClick={()=>setActiveTab('chats')}>
+💬<br/>الشات
+</button>
+<button style={activeTab==='groups'?s.navActive:s.navBtn} onClick={()=>setActiveTab('groups')}>
+👥<br/>المجموعات
+</button>
+<button style={activeTab==='story'?s.navActive:s.navBtn} onClick={()=>setActiveTab('story')}>
+📸<br/>الاستورى
+</button>
+</div>
+)
+const s = {
+page:{minHeight:'100vh',display:'flex',flexDirection:'column',fontFamily:'Cairo',color:'#FFD700'},
+logo:{fontSize:32,fontWeight:900,textAlign:'center',padding:20},
+input:{width:'100%',padding:12,margin:'8px 0',background:'#000',border:'2px solid #FFD700',borderRadius:8,color:'#FFD700',outline:'none'},
+btn:{width:'100%',padding:12,background:'#FFD700',border:'none',borderRadius:8,fontWeight:900,cursor:'pointer',margin:'5px 0',color:'#000'},
+btnOutline:{width:'100%',padding:12,background:'transparent',border:'2px solid #FFD700',borderRadius:8,color:'#FFD700',cursor:'pointer'},
+metalBtn:{width:'100%',padding:12,background:'linear-gradient(90deg,#FFD700,#B8860B)',border:'none',borderRadius:8,fontWeight:900,cursor:'pointer',margin:'15px 0',color:'#000'},
+header:{display:'flex',alignItems:'center',padding:10,background:'#FFD700',color:'#000',borderBottom:'3px solid #B8860B', justifyContent:'space-between'},
+m:{width:35,height:35,borderRadius:'50%',background:'#000',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:900,color:'#FFD700'},
+content:{flex:1,padding:15},
+messages:{flex:1,padding:15,overflowY:'auto',paddingBottom:160},
+dateSep:{textAlign:'center',color:'#fff',margin:'20px 0'},
+msgWrap:{display:'flex',justifyContent:'flex-end',marginBottom:15},
+msg:{padding:12,borderRadius:14,maxWidth:'85%',background:'#FFD700',color:'#000',border:'3px solid #B8860B',boxShadow:'0 0 20px rgba(255,215,0,0.5)'},
+inputBar:{position:'fixed',bottom:50,left:0,right:0,display:'flex',alignItems:'center',gap:10,padding:10,background:'#000',borderTop:'3px solid #FFD700'},
+inputChat:{flex:1,padding:10,background:'#2A2A2A',border:'2px solid #FFD700',borderRadius:20,color:'#FFD700',outline:'none'},
+iconBtn:{width:40,height:40,borderRadius:'50%',border:'none',cursor:'pointer'},
+sendBtn:{width:40,height:40,borderRadius:'50%',background:'#FFD700',border:'none',cursor:'pointer'},
+soundToggle:{padding:'5px 10px',background:'#000',color:'#FFD700',border:'1px solid #FFD700',borderRadius:6},
+backBtn:{background:'transparent',border:'1px solid #000',padding:'5px 10px',borderRadius:6,cursor:'pointer'},
+soundRow:{display:'flex',justifyContent:'space-between',alignItems:'center',margin:'10px 0',padding:10,background:'#1a1a1a',borderRadius:8},
+transBtn:{background:'transparent',border:'none',color:'#000',textDecoration:'underline',cursor:'pointer'},
+modal:{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.8)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000},
+modalContent:{padding:20,borderRadius:12,border:'3px solid',width:'90%',maxWidth:400},
+card:{padding:15,margin:'10px 0',background:'#1a1a1a',borderRadius:10,border:'1px solid #FFD700'},
+bottomNav:{position:'fixed',bottom:0,left:0,right:0,display:'flex',background:'#000',borderTop:'3px solid #FFD700',padding:'5px 0'},
+navBtn:{flex:1,background:'transparent',border:'none',color:'#FFD700',fontSize:12,cursor:'pointer'},
+navActive:{flex:1,background:'#FFD700',border:'none',color:'#000',fontSize:12,fontWeight:900,cursor:'pointer'},
+}
+return (
+<div style={{minHeight:'100vh', background:'#000', color:'#FFD700', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:20}}>
+<h1 style={{fontSize:30, fontWeight:'bold', marginBottom:20}}>👑 إنشاء حساب ملكى</h1>
+حساب جديد - 7 ايام مجانا
+<div style={{width:'100%', maxWidth:350, textAlign:'right'}}>
+<span style={s.label}>1- الاسم</span>
+<input style={s.input} placeholder="راجاف الحسينى" value={form.name} onChange={e => handleChange('name', e.target.value)} />
+<span style={s.label}>2- الرقم السرى</span>
+<input style={s.input} type="password" placeholder="الباسورد" value={form.password} onChange={e => handleChange('password', e.target.value)} />
+<span style={s.label}>3- رقم الهاتف</span>
+<input style={s.input} type="tel" placeholder="01xxxxxxxxx"
+value={form.phone} onChange={e => handleChange('phone', e.target.value)} />
+<span style={s.label}>4- بريد الحساب (اختيارى - ممكن تعمله بعدين)</span>
+<input style={s.input} placeholder="rajafelhossine@whatsinger.com" value={form.whatsingerEmail} onChange={e => handleChange('whatsingerEmail', e.target.value)} />
+<span style={s.label}>5- بريد التسجيل جيميل او ابل</span>
+<input style={s.input} placeholder="example@gmail.com" value={form.gmail} onChange={e => handleChange('gmail', e.target.value)} />
+<span style={s.label}>6- تاريخ الميلاد</span>
+<input type="date" onChange={(e)=>{
+const d = new Date(e.target.value)
+setBirthDate(e.target.value)
+setZodiac(getZodiac(d.getDate(), d.getMonth()+1))
+}} />
+<div style={{color:'#FFD700', textAlign:'center', margin:'10px 0', fontWeight:700}}>برجك: {zodiac}</div>
+<span style={s.label}>7- المهنة</span>
+<input style={s.input} placeholder="مثال: طالب، مهندس" value={form.job || ''} onChange={e => handleChange('job', e.target.value)} />
+<span style={s.label}>8- المحافظة</span>
+<input style={s.input} placeholder="مثال: القاهرة" value={form.governorate || ''} onChange={e => handleChange('governorate', e.target.value)} />
+<span style={s.label}>9- المركز / الحى </span>
+<input style={s.input} placeholder="مثال: مدينة نصر" value={form.center || ''} onChange={e => handleChange('center', e.target.value)} />
+<span style={s.label}>10- انتقلت لمكان تانى؟</span>
+{(form.moved === 'محافظة' || form.moved === 'دولة أخرى') && (
+<input style={s.input} placeholder="لو انتقلت، فين دلوقتي؟" value={form.movedTo || ''} onChange={e => handleChange('movedTo', e.target.value)} />
+)}
+<select style={s.input} value={form.moved || ''} onChange={e => handleChange('moved', e.target.value)}>
+<option value="">اختر</option>
+<option value="لا">لا</option>
+<option value="محافظة أخرى">محافظة أخرى</option>
+<option value="دولة أخرى">دولة أخرى</option>
+</select>
+<input style={s.input} placeholder="لو انتقلت، فين دلوقتى؟" value={form.movedTo || ''} onChange={e => handleChange('movedTo', e.target.value)} />
+<span style={s.label}>11- الدراسة</span>
+{(form.studyType === 'مدرسة' || form.studyType === 'جامعة') && (
+<input style={s.input} placeholder="اسم المدرسة أو الجامعة" value={form.studyPlace || ''} onChange={e => handleChange('studyPlace', e.target.value)} />
+)}
+<select style={s.input} value={form.studyType || ''} onChange={e => handleChange('studyType', e.target.value)}>
+<option value="">اختر</option>
+<option value="مدرسة">مدرسة</option>
+<option value="جامعة">جامعة</option>
+<option value="خريج">خريج</option>
+<option value="لا أدرس">لا أدرس</option>
+</select>
+
+<input style={s.input} placeholder="اسم المدرسة أو الجامعة" value={form.studyPlace || ''} onChange={e => handleChange('studyPlace', e.target.value)} />
+<span style={s.label}>12- الجنس</span>
+<select style={s.input} value={form.gender || ''} onChange={e => handleChange('gender', e.target.value)}>
+<option value="">اختر</option>
+<option value="ذكر">ذكر</option>
+<option value="أنثى">أنثى</option>
+</select>
+<span style={s.label}>13- الحالة</span>
+<select style={s.input} value={form.status || ''} onChange={e => handleChange('status', e.target.value)}>
+<option value="">اختر</option>
+<option value="أعزب">أعزب</option>
+<option value="مرتبط">مرتبط</option>
+<option value="متزوج">متزوج</option>
+<option value="مطلق">مطلق</option>
+<option value="أرمل">أرمل</option>
+</select>
+<span style={s.label}>14- الكنية / اللقب</span>
+<input style={s.input} placeholder="مثال: أبو محمد" value={form.nickname || ''} onChange={e => handleChange('nickname', e.target.value)} />
+<button style={s.btnOutline} onClick={()=>setPage('main')}>تخطى - أكمل بعدين</button>
+<button style={s.btn} onClick={handleCreate}>إنشاء الحساب وإرسال الرمز 🚀</button>
+</div>
+</div>
+)
+}
+if (page === 'verify') {
+return (
+<div style={{minHeight:'100vh', background:'#000', color:'#FFD700', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:20}}>
+<h1>تأكيد الرمز 🔐</h1>
+<p style={{color:'white', textAlign:'center'}}>بعثنا كود على {form.phone?.slice(0,4)}**** و {form.gmail?.slice(0,3)}****</p>
+<input style={{...s.btn, textAlign:'center', fontSize:22, letterSpacing:10, maxWidth:350}} placeholder="0000" value={verifyCode} onChange={e => setVerifyCode(e.target.value)} />
+<button style={{...s.btn, maxWidth:350}}>
+onClick={()=> {
+if(verifyCode.trim() === realCode){}
+setPage('main');
+setActiveTab('chats');
+} else {
+setError('الرمز غلط، حاول تاني')
+}
+}}>تأكيد ودخول الشاتات</button>
+<button onClick={()=> setPage('create')} style={{background:'none', border:'none', color:'gold', marginTop:10}}>تعديل البيانات</button>
+</div>
+)
+}
+if(page === 'login') return (
+<div style={{minHeight:'100vh', background:'#000', color:'#FFD700', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:20, textAlign:'center'}}>
+<h1 style={{fontSize:40, fontWeight:'bold', marginBottom:10}}>👑 Whatsinger</h1>
+<p style={{color:'#FFD700', fontSize:16, marginBottom:5}}>Whatsinger انا المالك الرسمى لتطبيق</p>
+<p style={{color:'#FFD700', fontSize:14, marginBottom:30, lineHeight:1.6}}>
+What Singer = ماذا يغنى + بيغنى ايه  + ماذا ارسل<br/>
+سجل حلمك + بعتلى ايه ؟
+</p>
+<input placeholder="ايميلك او رقمك" type="text" style={{width:'100%', maxWidth:350, padding:15, marginBottom:15, background:'#111', border:'1px solid #FFD700', borderRadius:10, color:'#fff'}} value={email} onChange={e => setEmail(e.target.value)} />
+<input placeholder="الباسورد" type="password" style={{width:'100%', maxWidth:350, padding:15, marginBottom:20, background:'#111', border:'1px solid #FFD700', borderRadius:10, color:'#fff'}} value={password} onChange={e => setPassword(e.target.value)} />
+<button onClick={handleLogin} style={{width:'100%', maxWidth:350, background:'#FFD700', color:'#000', padding:15, borderRadius:10, fontWeight:'bold', fontSize:18, border:'none', marginBottom:15}}>
+دخول
+</button>
+<button onClick={() => setPage('create')} style={{width:'100%', maxWidth:350, background:'transparent', color:'#FFD700', padding:15, borderRadius:10, border:'1px solid #FFD700', fontSize:14}}>
+حساب جديد - 7 ايام مجانا
+</button>
+</div>
+)
+}
