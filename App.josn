@@ -1,7 +1,6 @@
 import CryptoJS from 'crypto-js'
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
-
 const getZodiac = (dateStr) => {
 if(!dateStr) return '';
 const d = new Date(dateStr);
@@ -20,19 +19,16 @@ if((month==12 && day>=22) || (month==1 && day<=19)) return 'الجدي ♑';
 if((month==1 && day>=20) || (month==2 && day<=18)) return 'الدلو ♒';
 return 'الحوت ♓';
 };
-
 export default function App() {
 // --- القفل ---
 const [unlocked, setUnlocked] = useState(false);
 const [pass, setPass] = useState("");
 const [showPass, setShowPass] = useState(false);
 const SECRET = "تخ الملك";
-
 // --- المستخدم والصفحة ---
 const [user, setUser] = useState(null)
 const [currentPage, setCurrentPage] = useState('login')
 const [activeTab, setActiveTab] = useState('chats')
-
 // --- الدخول والفورم ---
 const [email, setEmail] = useState('')
 const [password, setPassword] = useState('')
@@ -46,7 +42,6 @@ job: '', governorate: '', center: '',
 moved: '', movedTo: '', studyType: '', studyPlace: '',
 gender: '', status: '', nickname: ''
 });
-
 // --- الشات والرسايل ---
 const [messages, setMessages] = useState([])
 const [input, setInput] = useState('')
@@ -59,7 +54,6 @@ const mediaRecorderRef = useRef(null);
 const audioChunksRef = useRef([]);
 let mediaRecorder = null
 let audioChunks = []
-
 // --- العيون والزهق ---
 const [eyeState, setEyeState] = useState('normal')
 const [messageStatus, setMessageStatus] = useState('none')
@@ -68,12 +62,10 @@ const [lastActivity, setLastActivity] = useState(Date.now())
 const [onlineUsers, setOnlineUsers] = useState(1)
 const [showGoldIngot, setShowGoldIngot] = useState(false)
 const [goldBadgeTimer, setGoldBadgeTimer] = useState(60)
-
 // --- الاشتراك والتاج والشارة ---
 const [subscription, setSubscription] = useState({ status: 'none', plan: null, startDate: null, endDate: null });
 const [badgeStatus, setBadgeStatus] = useState('none')
 const [daysLeft, setDaysLeft] = useState(0)
-
 // --- الأصوات ---
 const [soundsEnabled, setSoundsEnabled] = useState(true)
 const [sounds, setSounds] = useState({
@@ -82,7 +74,6 @@ mic: '', vinyl: '', call_icon: '', video_icon: '',
 ringtone: '', notif_in: '', notif_out: '',
 recording: '', typing: '', send: '', open: '', fail: '', success: ''
 });
-
 // --- الأصدقاء والبروفايل ---
 const [users, setUsers] = useState([])
 const [friendRequests, setFriendRequests] = useState([])
@@ -90,7 +81,6 @@ const [showAddFriend, setShowAddFriend] = useState(false)
 const [profileUser, setProfileUser] = useState(null)
 const [userPosts, setUserPosts] = useState([])
 const [groups, setGroups] = useState([])
-
 // --- الحماية والألوان ---
 const [keyboardLocked, setKeyboardLocked] = useState(false)
 const [hackerAlert, setHackerAlert] = useState(null)
@@ -98,7 +88,6 @@ const [textColor, setTextColor] = useState('#FFD700')
 const [bgColor, setBgColor] = useState('#000')
 const [keyboardColor, setKeyboardColor] = useState('#FFD700')
 const [fireText, setFireText] = useState(false)
-
 // --- ميتال والحلم ---
 const [showMetal, setShowMetal] = useState(false)
 const [metalMsg, setMetalMsg] = useState('')
@@ -107,7 +96,6 @@ const [dreamText, setDreamText] = useState('')
 const [dreamVideoUrl, setDreamVideoUrl] = useState(null)
 const [generatingDream, setGeneratingDream] = useState(false)
 const [dreamPaid, setDreamPaid] = useState(false)
-
 // --- الأدمن ومنشئ التطبيقات ---
 const [isAdmin, setIsAdmin] = useState(false)
 const [pendingVerifications, setPendingVerifications] = useState([])
@@ -115,71 +103,6 @@ const [appCode, setAppCode] = useState('<h1>مرحبا</h1>')
 const [showCreate, setShowCreate] = useState(false)
 const ADMIN_ID = 'ضع_هنا_user_id_بتاعك'
 const c = { bg: '#000', card: '#000', main: '#FFD700', text: '#FFD700' }
-const [unlocked, setUnlocked] = useState(false);
-const [pass, setPass] = useState("");
-const SECRET = "تخ الملك"; // <-- غيرها لاى كلمة انت عايزها
-import CryptoJS from 'crypto-js' // قفل ملكى للرسايل
-import React, { useState, useEffect, useRef } from 'react'
-import { supabase } from './supabase'
-const getZodiac = (dateStr) => {
-if(!dateStr) return '';
-const d = new Date(dateStr);
-const day = d.getDate();
-const month = d.getMonth() + 1;
-if((month==3 && day>=21) || (month==4 && day<=19)) return 'الحمل ♈';
-if((month==4 && day>=20) || (month==5 && day<=20)) return 'الثور ♉';
-if((month==5 && day>=21) || (month==6 && day<=20)) return 'الجوزاء ♊';
-if((month==6 && day>=21) || (month==7 && day<=22)) return 'السرطان ♋';
-if((month==7 && day>=23) || (month==8 && day<=22)) return 'الأسد ♌';
-if((month==8 && day>=23) || (month==9 && day<=22)) return 'العذراء ♍';
-if((month==9 && day>=23) || (month==10 && day<=22)) return 'الميزان ♎';
-if((month==10 && day>=23) || (month==11 && day<=21)) return 'العقرب ♏';
-if((month==11 && day>=22) || (month==12 && day<=21)) return 'القوس ♐';
-if((month==12 && day>=22) || (month==1 && day<=19)) return 'الجدي ♑';
-if((month==1 && day>=20) || (month==2 && day<=18)) return 'الدلو ♒';
-return 'الحوت ♓';
-};
-<style>{`@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }`}</style>
-@keyframes glow {
-0% { text-shadow: 0 0 10px #FFD700; }
-50% { text-shadow: 0 0 25px #FFD700, 0 0 40px #FFA500; } 
-100% { text-shadow: 0 0 10px #FFD700; }
-}
-`}</style>
-if (!unlocked) return (
-<div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100vh', gap:12}}>
-<div style={{textAlign:'center', marginBottom:12, animation:'glow 2s infinite'}}>
-<h1 style={{fontSize:36, fontWeight:900, color:'#FFD700', textShadow:'0 0 20px #FFD700'}}>
-تـخ 👑
-</h1>
-</div>
-<h2>🔒 قفل الملك "تخ"</h2>
-<inpu<div style={{position:'relative', width:'100%'}}>
-<input 
-type={showPass ? 'text' : 'password'} 
-placeholder="اكتب الباسورد ياامبراطور..." 
-value={pass} 
-onChange={(e)=>setPass(e.target.value)} 
-style={{padding:10, fontSize:16, width:'100%', paddingRight:40}}
-/>
-<button 
-onClick={()=> setShowPass(!showPass)}
-style={{position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:20}}
->
-{showPass ? '👁️' : '🙈'}
-</button>
-</div>
-<button onClick={()=> {
-if(pass === SECRET) {
-sounds.goldDrop.play(); // صوت الفلوس يا ملك
-setUnlocked(true);
-else {
-alert('غلط يا ملك 😂')
-document.body.style.animation = 'shake 0.5s';
-setTimeout(()=> document.body.style.animation = '', 500);
-}
-}} style={{padding:'10px 20px'}}>دخول</button>
-export default function App() {
 const [user, setUser] = useState(null)
 const[currentPage,setCurrentPage] = useState('login')
 const [activeTab, setActiveTab] = useState('chats')
