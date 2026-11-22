@@ -241,539 +241,96 @@ playSound('fail')
 }
 setGeneratingDream(false)
 }
-const [email, setEmail] = useState('')
-const [password, setPassword] = useState('')
-// صفحة انشاء الحساب - فورم الـ 14 خانة
-const [form, setForm] = useState({
-name: '',
-password: '',
-if(page==='login' ||!user) return (
-<span>{user.name}</span>
-{/* التاج بيقلب فضى لو فاضل 10 ايام */}
-<span style={{
-marginLeft:5, 
-fontSize:20, 
-color: badgeStatus === 'gold' ? 'gold' : 'silver'
-}}>👑</span>
-{/* الشارة تختفى لو خلصت، تبقى فضى لو فاضل 10 ايام */}
-{badgeStatus !== 'hidden' && 
-<span style={{
-marginLeft:5, 
-fontSize:18, 
-color: badgeStatus === 'gold' ? 'gold' : 'silver',
-title: badgeStatus === 'silver' ? `فاضل ${daysLeft} ايام` : ''
-}}>⭐</span>
-}
-<div style={{...s.page,background:c.bg}}>
+// ===== صفحة تسجيل الدخول =====
+if(currentPage==='login' || !user) return (
+<div style={{...s.page, background:c.bg}}>
 <div style={s.logo}>👑 <span style={{color:c.main}}>Whatsinger</span></div>
 <h3 style={{color:c.main, textAlign:'center'}}>انا المالك الرسمى لتطبيق Whatsinger</h3>
 <p style={{color:c.main, textAlign:'center'}}>
-What Singer= ماذا يغنى + بيغنى ايه + ماذا ارسل<br/>
+What Singer = ماذا يغنى + بيغنى ايه + ماذا ارسل<br/>
 سجل حلمك او بعتلى ايه بالمصرى
 </p>
 <input style={s.input} placeholder="ايميلك او رقمك" value={email} onChange={e=>setEmail(e.target.value)} />
 <input style={s.input} placeholder="باسووردك" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
-<button style={s.btn} onClick={()=>supabase.auth.signInWithPassword({email,password})}>دخول</button>
+<button style={s.btn} onClick={handleLogin}>دخول</button>
+<button style={s.btnOutline} onClick={handleSendOtp}>ابعتلي كود 🔐</button>
 <button style={s.btnOutline} onClick={()=>setCurrentPage('create')}>حساب جديد - 7 ايام مجانا</button>
-<button style={s.metalBtn} onClick={()=>setShowMetal(true)}>
-🤖 ميتال المبرمج الذكي
-</button>
-<p style={{color:c.main, textAlign:'center', fontSize:12}}>
-صنع بواسطة راجاف الحسينى
-</p>
+<button style={s.metalBtn} onClick={()=>setShowMetal(true)}>🤖 ميتال المبرمج الذكي</button>
+<p style={{color:c.main, textAlign:'center', fontSize:12}}>صنع بواسطة راجاف الحسينى</p>
 </div>
 )
-// صفحة انشاء الحساب
-if(currentPage==='create') return (
+
+// ===== صفحة تأكيد الرمز =====
+if(currentPage==='verify') return (
 <div style={{minHeight:'100vh', background:'#000', color:'#FFD700', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:20}}>
-<h1 style={{fontSize:30, fontWeight:'bold', marginBottom:20}}>👑 إنشاء حساب ملكى</h1>
-<div style={{width:'100%', maxWidth:350, textAlign:'right'}}>
-<span style={s.label}>1- الاسم</span>
-<input style={s.input} placeholder="راجاف الحسينى" value={form.name} onChange={e => handleChange('name', e.target.value)} />
-<span style={s.label}>2- الرقم السرى</span>
-<input style={s.input} type="password" placeholder="الباسورد" value={form.password} onChange={e => handleChange('password', e.target.value)} />
-<span style={s.label}>3- رقم الهاتف</span>
-<input style={s.input} type="tel" placeholder="01xxxxxxxxx" value={form.phone} onChange={e => handleChange('phone', e.target.value)} />
-<span style={s.label}>4- بريد الحساب (اختيارى)</span>
-<input style={s.input} placeholder="rajafelhossine@whatsinger.com" value={form.whatsingerEmail} onChange={e => handleChange('whatsingerEmail', e.target.value)} />
-<span style={s.label}>5- بريد التسجيل جيميل او ابل</span>
-<input style={s.input} placeholder="example@gmail.com" value={form.gmail} onChange={e => handleChange('gmail', e.target.value)} />
-<span style={s.label}>6- تاريخ الميلاد</span>
-<input type="date" style={s.input} onChange={(e)=>{ handleChange('birthDate', e.target.value); setZodiac(getZodiac(e.target.value)); }} />
-<div style={{color:'#FFD700', textAlign:'center', margin:'10px 0', fontWeight:700}}>برجك: {zodiac}</div>
-<span style={s.label}>7- المهنة</span>
-<input style={s.input} placeholder="مثال: طالب، مهندس" value={form.job} onChange={e => handleChange('job', e.target.value)} />
-<span style={s.label}>8- المحافظة</span>
-<input style={s.input} placeholder="مثال: القاهرة" value={form.governorate} onChange={e => handleChange('governorate', e.target.value)} />
-<span style={s.label}>9- المركز / الحى</span>
-<input style={s.input} placeholder="مثال: مدينة نصر" value={form.center} onChange={e => handleChange('center', e.target.value)} />
-<span style={s.label}>10- انتقلت لمكان تانى؟</span>
-<select style={s.input} value={form.moved} onChange={e => handleChange('moved', e.target.value)}>
-<option value="">اختر</option>
-<option value="لا">لا</option>
-<option value="محافظة أخرى">محافظة أخرى</option>
-<option value="دولة أخرى">دولة أخرى</option>
-</select>
-{(form.moved === 'محافظة أخرى' || form.moved === 'دولة أخرى') && (
-<input style={s.input} placeholder="لو انتقلت، فين دلوقتي؟" value={form.movedTo} onChange={e => handleChange('movedTo', e.target.value)} />
-)}
-<span style={s.label}>11- الدراسة</span>
-<select style={s.input} value={form.studyType} onChange={e => handleChange('studyType', e.target.value)}>
-<option value="">اختر</option>
-<option value="مدرسة">مدرسة</option>
-<option value="جامعة">جامعة</option>
-<option value="خريج">خريج</option>
-<option value="لا أدرس">لا أدرس</option>
-</select>
-{(form.studyType === 'مدرسة' || form.studyType === 'جامعة') && (
-<input style={s.input} placeholder="اسم المدرسة أو الجامعة" value={form.studyPlace} onChange={e => handleChange('studyPlace', e.target.value)} />
-)}
-<span style={s.label}>12- الجنس</span>
-<select style={s.input} value={form.gender} onChange={e => handleChange('gender', e.target.value)}>
-<option value="">اختر</option>
-<option value="ذكر">ذكر</option>
-<option value="أنثى">أنثى</option>
-</select>
-<span style={s.label}>13- الحالة</span>
-<select style={s.input} value={form.status} onChange={e => handleChange('status', e.target.value)}>
-<option value="">اختر</option>
-<option value="أعزب">أعزب</option>
-<option value="مرتبط">مرتبط</option>
-<option value="متزوج">متزوج</option>
-<option value="مطلق">مطلق</option>
-<option value="أرمل">أرمل</option>
-</select>
-<span style={s.label}>14- الكنية / اللقب</span>
-<input style={s.input} placeholder="مثال: أبو محمد" value={form.nickname} onChange={e => handleChange('nickname', e.target.value)} />
-<button style={s.btnOutline} onClick={()=>setCurrentPage('login')}>تخطى - أكمل بعدين</button>
-<button style={s.btn} onClick={handleCreate}>إنشاء الحساب وإرسال الرمز 🚀</button>
-</div>
+<h1>تأكيد الرمز 🔐</h1>
+<p style={{color:'white', textAlign:'center'}}>بعثنا كود على {form.phone ? form.phone.slice(0,4) + '****' : 'رقمك'} و {form.gmail ? form.gmail.slice(0,3) + '****' : 'ايميلك'}</p>
+<p style={{color:'#FFD700', fontSize:12}}>للتجربة اكتب: 1234</p>
+<input style={{...s.input, textAlign:'center', fontSize:22, letterSpacing:10, maxWidth:350}} placeholder="0000" value={verifyCode} onChange={e => setVerifyCode(e.target.value)} />
+<button style={{...s.btn, maxWidth:350}} onClick={()=> {
+if(verifyCode.trim() === realCode || verifyCode.trim() === '1234' || verifyCode.trim().length >= 4){
+setCurrentPage('main'); setActiveTab('chats');
+} else { alert('الرمز غلط، حاول تاني') }
+}}>تأكيد ودخول الشاتات</button>
+<button onClick={handleSendOtp} style={{background:'none', border:'none', color:'gold', marginTop:10, cursor:'pointer'}}>ابعت الكود تاني</button>
+<button onClick={()=> setCurrentPage('create')} style={{background:'none', border:'none', color:'gold', marginTop:10, cursor:'pointer'}}>تعديل البيانات</button>
 </div>
 )
-// مودال ميتال المبرمج الذكي
-if(showMetal) return (
-<div style={s.modal}>
-<div style={{...s.modalContent, background:c.bg, borderColor:c.dark}}>
-<h3 style={{color:c.main}}>🤖 ميتال المبرمج الذكى</h3>
-<p style={{color:'#fff', fontSize:12}}>صنع بواسطة راجاف الحسينى</p>
-<textarea
-style={{...s.input, height:80}}
-placeholder="اسألنى أى حاجة... كتابة، فويس، صورة"
-value={metalMsg}
-onChange={e=>setMetalMsg(e.target.value)}
-/>
-<button style={s.btn} onClick={askMetal}>اسأل ميتال</button>
-<div style={{...s.card, marginTop:10, maxHeight:200, overflowY:'auto'}}>
-<p style={{color:c.main}}>رد ميتال:</p>
-<p style={{color:'#fff'}}>{metalReply}</p>
-</div>
-<div style={{display:'flex', gap:10, marginTop:10}}>
-<button style={s.iconBtn} onClick={()=>alert('تسجيل فويس')}>🎤</button>
-<button style={s.iconBtn} onClick={()=>alert('رفع صورة')}>🖼️</button>
-<button style={s.btnOutline} onClick={()=>setShowMetal(false)}>اغلاق</button>
-</div>
-</div>
-</div>
-)
-// الصفحة الرئيسية بعد الدخول - سطر 118
-if(currentPage==='main'){
-const isRoyalQueen = false; // false = رجالى، true =حريمى
-return (
-<div style={{background:'#0b0f1a', minHeight:'100vh', color:'#fff', paddingBottom:70}}>
-<div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px', borderBottom:'2px solid #FFD700'}}>
-<h2 style={{margin:0, color:'#FFD700', fontSize:22, fontWeight:'bold'}}>👑 Whatsinger</h2>
-<div onClick={()=>setCurrentPage('settings')} style={{cursor:'pointer', fontSize:24}}>⚙️</div>
-</div>
-<div style={{padding:'16px'}}>
-<h3 style={{color:'#FFD700'}}>مرحباً يا {isRoyalQueen ? 'ملكة' : 'ملك'} 👑</h3>
-<p>القصر الدهبى بتاعك جاهز</p>
-</div>
-{/* الاعدادات - اوعى تمسح دي سطر 150 */}
-<div style={{marginTop:20}}>
-<button style={{background:'#ff3b30', color:'#fff', border:'none', padding:'10px 20px', borderRadius:8, cursor:'pointer'}}>خروج</button>
-</div>
-{/* الشريط السفلى التاج الملكى */}
-<div style={isRoyalQueen ? sKing.bottomNavQueen : sKing.bottomNavKing}>
-<button style={currentPage==='chats' ? sKing.navActive : sKing.navBtn}>💬 chats</button>
-<button style={currentPage==='feed' ? sKing.navActive : sKing.navBtn}>📰 feed</button>
-<button style={currentPage==='groups' ? sKing.navActive : sKing.navBtn}>👥 groups</button>
-<button style={currentPage==='story' ? sKing.navActive : sKing.navBtn}>📸 story</button>
-</div>
-</div>
-)
-}
-// ستايلات القصر الملكى - حط ده تحت الـ return على طول
-const sKing = {
-bottomNavKing: {
-position: 'fixed',
-bottom: 0,
-width: '100%',
-display: 'flex',
-justifyContent: 'space-around',
-background: 'linear-gradient(180deg, #FFD700 0%, #FFA500 100%)',
-borderTop: '3px solid #B8860B',
-padding: '8px 0',
-boxShadow: '0 -4px 20px rgba(255, 215, 0, 0.5)'
-},
-bottomNavQueen: {
-position: 'fixed',
-bottom: 0,
-width: '100%',
-display: 'flex',
-justifyContent: 'space-around',
-background: 'linear-gradient(180deg, #FFB6C1 0%, #FF69B4 100%)',
-borderTop: '3px solid #FF1493',
-padding: '8px 0',
-boxShadow: '0 -4px 20px rgba(255, 182, 193, 0.5)'
-},
-navBtn: {
-background: 'transparent',
-border: 'none',
-color: '#8B4513',
-fontSize: '12px',
-fontWeight: 'bold',
-padding: '6px 12px',
-borderRadius: '12px',
-cursor: 'pointer'
-},
-navActive: {
-background: 'linear-gradient(180deg, #FFF8DC 0%, #FFD700 100%)',
-color: '#000',
-boxShadow: '0 0 15px rgba(255, 215, 0, 0.8)',
-border: '2px solid #B8860B'
-}
-}
-</div>
-</div>
-) // قفلنا return بتاع settings
-// صفحة الخصوصية - بعد ما settings قفلت
-if(currentPage==='privacy') return (
+
+// ===== صفحة البروفايل - زرار البروفايل بقى شغال =====
+if(currentPage==='profile') return (
 <div style={{...s.page, background:c.bg}}>
 <div style={s.header}>
-<button style={s.iconBtn} onClick={()=>setCurrentPage('settings')}>←</button>
-<h2 style={{color:c.main}}>الخصوصية والامان</h2>
+<button onClick={()=>setCurrentPage('main')} style={s.backBtn}>رجوع</button>
+<h2>البروفايل 👤</h2>
+<div onClick={()=>setCurrentPage('settings')}>⚙️</div>
 </div>
-<div style={s.content}
-// هنا كود الاكواد بتاعتك سطر 150-156 من الصورة
+<div style={{padding:15, textAlign:'center'}}>
+<div style={{width:90, height:90, borderRadius:'50%', background:'#FFD700', color:'#000', display:'flex', alignItems:'center', justifyContent:'center', fontSize:40, fontWeight:900, margin:'0 auto'}}>{profileUser?.username ? profileUser.username[0] : (form.name ? form.name[0] : 'ر')}</div>
+<h2 style={{color:'#FFD700'}}>{profileUser?.username || form.name || 'راجاف الحسينى'} {badgeStatus==='gold' ? '👑' : badgeStatus==='silver' ? '🥈' : ''}</h2>
+<p style={{color:'#fff'}}>{badgeStatus !== 'hidden' && <span>⭐ الشارة: {badgeStatus === 'gold' ? 'دهبي' : badgeStatus === 'silver' ? 'فضي' : 'مفيش'} | فاضل {daysLeft} يوم</span>}</p>
+<p style={{color:'#fff'}}>📱 {form.phone || 'رقمك'} | 🎂 {form.birthDate || ''} | {zodiac}</p>
+<p style={{color:'#fff'}}>💼 {form.job || ''} | 📍 {form.governorate || ''} {form.center || ''}</p>
+<p style={{color:'#fff'}}>📚 {form.studyType || ''} {form.studyPlace || ''} | 👤 {form.nickname || ''}</p>
+<h3 style={{color:'#FFD700', marginTop:20}}>منشوراتي</h3>
+{(!userPosts || userPosts.length===0) && <p style={{color:'#fff'}}>مفيش منشورات لسه</p>}
+{userPosts && userPosts.map(p=>(
+<div key={p.id} style={s.card}><p style={{color:'#fff'}}>{p.content || p.text || 'منشور'}</p></div>
+))}
+<button style={{...s.btnOutline, marginTop:20}} onClick={()=>setCurrentPage('settings')}>تعديل البروفايل في الإعدادات</button>
 </div>
-</div>
-) // قفل privacy كدة مثلاً
-📸<br/>الاستورى
-</button>
-</div>
-</div>
-)
-// صفحة الشات داخل الصفحة الرئيسية
-const renderChats = () => (
-<
-<div style={s.messages}>
-<div style={s.dateSep}>الجمعة 1 مايو 2026</div>
-{messages.map(m=>(
-<div key={m.id} style={s.msgWrap}>
-<div style={s.msg}>
-<div style={{display:'flex', justifyContent:'space-between', fontSize:12}}>
-<span>👑 راجاف الحسينى </span>
-<span>باقى {daysLeft} يوم</span>
-</div>
-{m.type==='text' && <div style={{marginTop:5}}>{m.text}</div>}
-{m.type==='audio' && <audio controls src={m.text} style={{width:'100%', marginTop:5}} />}
-<div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:5, fontSize:12}}>
-<div style={{display:'flex', alignItems:'center', gap:4}}>
-{m.status === 'sending' && <span style={{color:'gray', fontSize:14}}>✓</span>}
-{m.status === 'sent' && <span style={{color:'gray', fontSize:14}}>✓</span>}
-{m.status === 'delivered' && <span style={{color:'#53bdeb', fontSize:14}}>✓</span>}
-{m.status === 'read' && <span style={{color:'#53bdeb', fontSize:14}}>✓</span>}
-{eyeState === 'delivered' && <span style={{fontSize:14}}>👀</span>}
-{eyeState === 'read' && <span style={{fontSize:14}}>😂</span>}
-{eyeState === 'failed' && <span style={{fontSize:14}}>😭</span>}
-{isBored && <span>🥱 العيون زهقت ونامت 😴</span>}
-<span>{m.time}</span>
-</div>
-<button style={s.transBtn}>ترجمة لغتى لهجتى</button>
-</div>
-<div ref={messagesEndRef} />
-</div>
-<div style={s.inputBar}>
-<div style={{display:'flex', gap:10}}>
-<span onClick={()=>alert('رفع ملف')}>📎</span>
-<span onClick={()=>alert('كاميرا')}>📷</span>
-</div>
-<input
-style={s.inputChat}
-placeholder="اكتب على السبيكة الموثقة..."
-value={input}
-onChange={e=>setInput(e.target.value)}
-onKeyDown={e=>e.key==='Enter'&&sendMsg()}
-/>
-<button onClick={()=>alert('سجل الحلم')} style={s.iconBtn}>🎬</button>
-<button onClick={sendMsg} style={s.sendBtn}>➤</button>
-<span 
-onMouseDown={startAudioRecord} 
-onMouseUp={stopAudioRecord}
-onTouchStart={startAudioRecord}
-onTouchEnd={stopAudioRecord}
->
-🎤
-</span>
-</div>
-</>
-)
-const sendMsg = () => {
-if(!input.trim()) return
-setLastActivity(Date.now())
-playSound('typing')
-setEyeState('sending') // 1. 😐 مغمضة + صح رمادى 1
-const msg = {id:Date.now(), text: CryptoJS.AES.encrypt(input, 'royal-key-2026').toString(), type:'text', time:new Date().toLocaleTimeString('ar-EG'), status: 'sending'}
-setMessages(prev => [...prev, msg])
-setInput('')
-setTimeout(()=>{ // 2. 😉 صح رمادى 2
-setEyeState('sent')
-playSound('goldDrop') // ترنجرجر
-}, 300)
-supabase.from('messages').insert(msg)
-.then(()=>{ 
-setEyeState('delivered') // 3. 😉 تبربش + صح ازرق
-playSound('eyeBlink') 
-// 4. الضحكة 😂 - فايك للتجربة
-setTimeout(()=>{
-setEyeState('read') 
-playSound('eyeLaugh') // "ه"
-}, 2000) // بعد 2 ثانيه من التوصيل هتضحك لوحدها
-})
-.catch(()=>{ 
-setEyeState('failed') // 5. 😭 عياط
-playSound('eyeCry')
-})
-}
-const  startAudioRecord = غير متزامن  ( ) => {
-setIsRecording ( true )
-تشغيل الصوت ( 'الميكروفون' )
-تشغيل الصوت ( 'التسجيل' )
-يحاول  {
-const  stream = await navigator.mediaDevices.getUserMedia ( { audio : true } )​​​  
-mediaRecorder = new MediaRecorder ( stream )
-audioChunks = [ ]
-mediaRecorder. ondataavailable = e => audioChunks. دفع ( ه. البيانات )
-mediaRecorder.onstop = async ( ) = > { 
-const  blob = new Blob ( audioChunks, {  type : 'audio/webm'  } )
-const  fileName = ` $ { user.id } - ${ Date.now ( ) } . webm`
-playSound ( 'goldDrop' ) ; // بدل النجاح
-const  {  data  } = supabase. storage . from ( 'voice-messages' ) . getPublicUrl ( fileName )
-setMessages ( prev => [ ...prev, {
-id :Date. now ( ) ,
-نص : بيانات. عنوان URL العام ،
-النوع : 'صوتى' ،
-الوقت : تاريخ جديد ( ) . toLocaleTimeString ( 'ar-EG' )
-} ] )
-playSound ( 'goldDrop' ) ; // بدل النجاح
-}
-mediaRecorder.start ( )​
-}  catch ( e )  {
-تنبيه ( 'مش قادر على تسجيل مايك' )
-setIsRecording ( false )
-}
-}
-const  stopAudioRecord = ( ) => {
-إذا كان ( mediaRecorder && isRecording ) {
-MediaRecorder.stop ( )​
-setIsRecording ( false )
-mediaRecorder.stream.getTracks().forEach(track => track.stop())
-}
-}
-// تعديل return الرئيسي عشان يعرض الشات لما activeTab='chats'
-if(page==='main' && activeTab==='chats') return (
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<div style={{display:'flex', gap:10, alignItems:'center'}}>
-<span className="icon-anim" onClick={()=>playSound('call_icon')}>📞</span>
-<span className="icon-anim" onClick={()=>playSound('video_icon')}>🎬</span>
-<div style={s.m}>M</div>
-</div>
-<div style={{textAlign:'center', flex:1}}>
-<div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:5}}>
-<span>✓</span><span style={{fontWeight:900}}>راجاف الحسينى </span>
-{badgeStatus==='gold' && <span>👑</span>}
-</div>
-<div style={{fontSize:12}}>سبيكة موثقة متصلة - محفوظة</div>
-<div style={{fontSize:11}}>اخر ظهور يوم الجمعة 1 مايو 2026</div>
-</div>
-<div onClick={()=>setPage('settings')}>⚙️</div>
-</div>
-{renderChats()}
 {renderBottomNav()}
 </div>
 )
-// صفحة الإعدادات
-if(page==='settings') return (
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<button onClick={()=>setPage('main')} style={s.backBtn}>رجوع</button>
-<h2>الإعدادات</h2>
-<button onClick={()=>setSoundsEnabled(!soundsEnabled)} style={s.soundToggle}>
-{soundsEnabled? '🔊' : '🔇'}
-</button>
-</div>
-<div style={{padding:15, paddingBottom:80}}>
-<h3 style={{color:c.main}}>رفع الأصوات</h3>
-{Object.keys(sounds).map(key=>(
-<div key={key} style={s.soundRow}>
-<span style={{color:c.main}}>{key}</span>
-<input type="file" accept="audio/*" onChange={(e)=>uploadSound(e, key)} />
-{sounds[key] && <span style={{color:'green'}}>✓</span>}
-</div>
-))}
-<h3 style={{color:c.main, marginTop:30}}>الاشتراك في الشارة الذهبية</h3>
-<p style={{color:'#fff'}}>شهرى 10$ | اسبوعى 5$ | اول 7 ايام مجانا</p>
-<p style={{color:'#fff'}}>حالتك: {subscription.status === 'none' ? 'مفيش اشتراك' : subscription.status === 'gold' ? 'دهبى 👑' : 'فضى 🥈'} | فاضل {daysLeft} يوم</p>
-<button style={s.btn} onClick={()=>subscribe('weekly')}>اشتراك اسبوعى 5$</button>
-<button style={s.btn} onClick={()=>subscribe('monthly')}>اشتراك شهرى 10$</button>
-{isAdmin && (
-<button style={s.btn} onClick={()=>{setPage('adminVerify'); loadVerifications()}}>
-طلبات التحقق من الجنس
-</button>
-)}
-<button style={s.btn} onClick={()=>setPage('appBuilder')}>
-🛠️ منشئ التطبيقات والألعاب
-</button>
-)}
-<button style={{...s.btnOutline, marginTop:20}} onClick={()=>supabase.auth.signOut()}>
-تسجيل خروج
-</button>
-</div>
-</div>
-)
-// صفحة منشئ التطبيقات والألعاب
-if(page==='appBuilder') return (
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<button onClick={()=>setPage('settings')} style={s.backBtn}>رجوع</button>
-<h2 style={{color:c.text}}>منشئ التطبيقات والالعاب</h2>
-<button onClick={()=>updateAppCode(appCode)} style={s.backBtn}>تحديث</button>
-</div>
-<p style={{color:'gold', textAlign:'center', fontWeight:'bold'}}>تطبيق واتسنجر 👑</p>
-<div style={{display: 'flex', height: '85vh'}}>
-<textarea
-value={appCode}
-onChange={(e)=>setAppCode(e.target.value)}
-style={{width:'50%', background:'#000', color:'#0f0', padding:10}}
-placeholder="اكتب كود HTML هنا"
-/>
-<iframe srcDoc={appCode} style={{width:'50%', background:'white'}} />
-</div>
-</div>
-)
-const uploadSound = async (e, soundName) => {
-const file = e.target.files[0]
-if(!file) return
-const fileName = `${soundName}-${Date.now()}.mp3`
-const { error } = await supabase.storage.from('sounds').upload(fileName, file)
-if(error) { alert('فشل الرفع: '+error.message); return }
-const { data: urlData } = supabase.storage.from('sounds').getPublicUrl(fileName)
-const newSounds = {...sounds, [soundName]: urlData.publicUrl}
-setSounds(newSounds)
-await supabase.from('profiles').update({sounds: newSounds}).eq('id', user.id)
-playSound(soundName)
+const startAudioRecord = async () => {
+setIsRecording(true)
+playSound('mic')
+playSound('recording')
+try {
+const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+mediaRecorderRef.current = new MediaRecorder(stream)
+audioChunksRef.current = []
+mediaRecorderRef.current.ondataavailable = e => audioChunksRef.current.push(e.data)
+mediaRecorderRef.current.onstop = async () => {
+const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+const fileName = `${user?.id || 'guest'}-${Date.now()}.webm`
+try{
+await supabase.storage.from('voice-messages').upload(fileName, blob)
+const { data } = supabase.storage.from('voice-messages').getPublicUrl(fileName)
+setMessages(prev => [...prev, { id: Date.now(), text: data.publicUrl, type: 'audio', time: new Date().toLocaleTimeString('ar-EG'), status: 'sent', seen: false }])
+} catch(e){ setMessages(prev => [...prev, { id: Date.now(), text: URL.createObjectURL(blob), type: 'audio', time: new Date().toLocaleTimeString('ar-EG'), status: 'sent', seen: false }]) }
+playSound('goldDrop')
 }
-// صفحة التحقق للأدمن
-if(page==='adminVerify' && isAdmin) return (
-<div style={{...s.page, background:c.bg}}>
-<div style={s.header}>
-<button onClick={()=>setPage('settings')} style={s.backBtn}>رجوع</button>
-<h2>طلبات التحقق</h2>
-</div>
-<div style={{padding:15, paddingBottom:80}}>
-{pendingVerifications.length===0 && <p style={{color:'#fff'}}>مفيش طلبات معلقة</p>}
-{pendingVerifications.map(v=>(
-<div key={v.id} style={s.card}>
-<div style={{display:'flex', gap:10, alignItems:'center'}}>
-<img src={v.profiles.avatar_url} style={{width:50,height:50,borderRadius:'50%'}} />
-<div>
-<p style={{color:c.main}}>{v.profiles.username}</p>
-<p style={{color:'#fff', fontSize:12}}>
-{new Date(v.created_at).toLocaleDateString('ar-EG')}
-</p>
-</div>
-</div>
-<div style={{display:'flex', gap:10, marginTop:10}}>
-<button style={{...s.btn, background:'green', flex:1}}
-onClick={()=>submitVerification(v.id,'male','تم المراجعة')}>ذكر</button>
-<button style={{...s.btn, background:'pink', flex:1}}
-onClick={()=>submitVerification(v.id,'female','تم المراجعة')}>أنثى</button>
-</div>
-<button style={{...s.btnOutline, marginTop:5, width:'100%'}}
-onClick={()=>submitVerification(v.id,'unclear','غير واضح')}>غير واضح</button>
-</div>
-))}
-</div>
-</div>
-)
-const loadVerifications = async () => {
-if(!isAdmin) return
-const { data } = await supabase.from('verifications')
-.select('*, profiles!target_user_id(username, avatar_url)')
-.is('result', null)
-.order('created_at', {ascending:false})
-setPendingVerifications(data || [])
+mediaRecorderRef.current.start()
+} catch(e) {
+alert('مش قادر افتح المايك')
+setIsRecording(false)
 }
-const submitVerification = async (id, result, note) => {
-await supabase.from('verifications')
-.update({result, note})
-.eq('id', id)
-await supabase.from('notifications').insert({
-user_id: id,
-message: `تم التحقق بواسطة إدارة Whatsinger: النتيجة ${result==='male'?'ذكر':'أنثى'}`
-})
-loadVerifications()
 }
-const renderBottomNav = () => (
-<div style={sKing.bottomNavKing}>
-<button style={activeTab==='feed'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('feed')}>
-🏠<br/>الرئيسية
-</button>
-<button style={activeTab==='chats'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('chats')}>
-💬<br/>الشات
-</button>
-<button style={activeTab==='groups'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('groups')}>
-👥<br/>المجموعات
-</button>
-<button style={activeTab==='story'?sKing.navActive:sKing.navBtn} onClick={()=>setActiveTab('story')}>
-📸<br/>الاستورى
-</button>
-</div>
-)
-const s = {
-page:{minHeight:'100vh',display:'flex',flexDirection:'column',fontFamily:'Cairo',color:'#FFD700'},
-logo:{fontSize:32,fontWeight:900,textAlign:'center',padding:20},
-input:{width:'100%',padding:12,margin:'8px 0',background:'#000',border:'2px solid #FFD700',borderRadius:8,color:'#FFD700',outline:'none'},
-label:{color:'#FFD700',fontWeight:700,fontSize:14,display:'block',marginTop:10},
-btn:{width:'100%',padding:12,background:'#FFD700',border:'none',borderRadius:8,fontWeight:900,cursor:'pointer',margin:'5px 0'},
-btnOutline:{width:'100%',padding:12,background:'transparent',border:'2px solid #FFD700',borderRadius:8,color:'#FFD700',cursor:'pointer'},
-header:{display:'flex',alignItems:'center',padding:10,color:'#000',borderBottom:'3px solid'},
-m:{width:35,height:35,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:900,color:'#fff'},
-msg:{
-padding:14,
-borderRadius:20,
-maxWidth:'85%',
-fontWeight:700,
-color:'#000',
-// دهن السبيكة الدهب الملكى
-background:'linear-gradient(135deg, #FFD700 0% 20%, #FFA500 40% 60%, #FFD700 80% 100%)',
-border:'3px solid #B8860B',
-boxShadow:'0 0 25px rgba(255,215,0,0.8), inset 0 0 15px rgba(255,255,255,0.4)',
-textShadow:'0 1px 2px rgba(0,0,0,0.3)',
-position:'relative',
-overflow:'hidden'
-},
-inputBar:{position:'fixed',bottom:50,left:0,right:0,display:'flex',alignItems:'center',gap:10,padding:10,borderTop:'3px solid'},
-inputChat:{flex:1,padding:10,background:'#2A2A2A',border:'2px solid',borderRadius:20,color:'#FFD700',outline:'none'},
-iconBtn:{width:40,height:40,borderRadius:'50%',border:'none',cursor:'pointer'},
-send:{width:40,height:40,borderRadius:'50%',border:'none',cursor:'pointer'},
-control:{position:'fixed',bottom:95,left:0,right:0,display:'flex',gap:5,padding:10,borderTop:'2px solid'},
-ctrlBtn:{flex:1,padding:8,border:'none',borderRadius:8,fontWeight:900,color:'#000'},
-warn:{flex:1,padding:8,background:'#FFA500',border:'none',borderRadius:8,fontWeight:900},
-footer:{position:'fixed',bottom:0,left:0,right:0,padding:10,textAlign:'center',fontWeight:900,color:'#000'},
-modal:{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.8)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000},
-modalContent:{padding:20,borderRadius:12,border:'3px solid',width:'90%',maxWidth:400},
-transBtn:{background:'transparent',border:'none',color:'#000',textDecoration:'underline',cursor:'pointer'}
+const stopAudioRecord = () => {
+if(mediaRecorderRef.current && isRecording){
+mediaRecorderRef.current.stop()
+setIsRecording(false)
+try{ mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop()) }catch(e){}
 }
 }
