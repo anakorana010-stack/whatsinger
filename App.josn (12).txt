@@ -1,9 +1,63 @@
-const [unlocked, setUnlocked] = useState(false);
-const [pass, setPass] = useState("");
-const SECRET = "تخ الملك"; // <-- غيرها لاى كلمة انت عايزها
 import CryptoJS from 'crypto-js' // قفل ملكى للرسايل
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
+}} style={{padding:'10px 20px'}}>دخول</button>
+export default function App() {
+const [user, setUser] = useState(null)
+const[currentPage,setCurrentPage] = useState('login')
+const [activeTab, setActiveTab] = useState('chats')
+const [eyeState, setEyeState] = useState('normal')
+const [isBored, setIsBored] = useState(false)
+const [lastActivity, setLastActivity] = useState(Date.now())
+const [unlocked, setUnlocked] = useState(false);
+const [pass, setPass] = useState("");
+const SECRET = "تخ الملك"; // <-- غيرها لاى كلمة انت عايزها
+const [users, setUsers] = useState([]) // كل الناس
+const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقة
+const [showAddFriend, setShowAddFriend] = useState(false) // مودال الاضافة
+// 2. دالة تجيب كل اليوزرز ماعدا انت
+// 1. States جديدة فوق خالص مع باقى الuseState
+// 5. States البروفايل
+const [profileUser, setProfileUser] = useState(null) // اليوزر اللي فاتح بروفايله
+const [userPosts, setUserPosts] = useState([]) // منشوراته
+// 6. دالة تفتح البروفايل
+const [editingMsgId, setEditingMsgId] = useState(null) // بنعدل رسالة رقم كام
+const [editText, setEditText] = useState('')
+const [textColor, setTextColor] = useState('#FFD700') // لون الكلام دهبى
+const [bgColor, setBgColor] = useState('#000') // لون الخلفية اسود
+const [keyboardColor, setKeyboardColor] = useState('#FFD700') // لون الكيبورد
+const [fireText, setFireText] = useState(false) // الكتابة بالنار شغالة ولا لا
+// 11. دالة التعديل - مبتختفيش ابدا زي ما طلبت
+// 7. States المجموعات والحماية
+const [groups, setGroups] = useState([])
+const [keyboardLocked, setKeyboardLocked] = useState(false) // قفل الكيبورد
+const [hackerAlert, setHackerAlert] = useState(null) // لو هاكر دخل
+// 8. دالة قفل الكيبورد الملكى
+// 14. States سجل حلمك 
+const [dreamText, setDreamText] = useState('')
+const [dreamVideoUrl, setDreamVideoUrl] = useState(null)
+const [generatingDream, setGeneratingDream] = useState(false)
+const [dreamPaid, setDreamPaid] = useState(false) // هتبقى true بعد الدفع
+// 15. دالة توليد الحلم بـ Luma
+const [email, setEmail] = useState('')
+const [password, setPassword] = useState('')
+// صفحة انشاء الحساب - فورم الـ 14 خانة
+const [form, setForm] = useState({
+const [messages, setMessages] = useState([])
+const [input, setInput] = useState('')
+const [badgeStatus, setBadgeStatus] = useState('none')
+const [daysLeft, setDaysLeft] = useState(0)
+// 1. حالة الاشتراك الملكى
+const [subscription, setSubscription] = useState({
+const [isRecording, setIsRecording] = useState(false)
+const [showPass,setShowPass] = useState(false);
+const [soundsEnabled, setSoundsEnabled] = useState(true)
+const [sounds, setSounds] = useState({
+goldDrop:new 
+const [isAdmin, setIsAdmin] = useState(false)
+const [appCode, setAppCode] = useState('<h1>مرحبا</h1>')
+const updateAppCode = (code) => setAppCode(code)
+
 const getZodiac = (dateStr) => {
 if(!dateStr) return '';
 const d = new Date(dateStr);
@@ -61,14 +115,6 @@ alert('غلط يا ملك 😂')
 document.body.style.animation = 'shake 0.5s';
 setTimeout(()=> document.body.style.animation = '', 500);
 }
-}} style={{padding:'10px 20px'}}>دخول</button>
-export default function App() {
-const [user, setUser] = useState(null)
-const[currentPage,setCurrentPage] = useState('login')
-const [activeTab, setActiveTab] = useState('chats')
-const [eyeState, setEyeState] = useState('normal')
-const [isBored, setIsBored] = useState(false)
-const [lastActivity, setLastActivity] = useState(Date.now())
 // العيون بتزهق لو محدش بعت رسالة لمدة 30 ثانية
 useEffect(() => {
 const timer = setInterval(() => {
@@ -77,11 +123,6 @@ else setIsBored(false)
 }, 5000)
 return () => clearInterval(timer)
 }, [lastActivity])
-// 1. States جديدة فوق خالص مع باقى الuseState
-const [users, setUsers] = useState([]) // كل الناس
-const [friendRequests, setFriendRequests] = useState([]) // الطلبات المعلقة
-const [showAddFriend, setShowAddFriend] = useState(false) // مودال الاضافة
-// 2. دالة تجيب كل اليوزرز ماعدا انت
 const loadUsers = async () => {
 const { data } = await supabase.from('profiles').select('*').neq('id', user.id)
 setUsers(data || [])
@@ -103,10 +144,6 @@ await supabase.from('friend_requests').update({status: 'accepted'}).eq('id', req
 await supabase.from('friends').insert([{user_id: user.id, friend_id: fromId}, {user_id: fromId, friend_id: user.id}])
 playSound('eyeLaugh') // ضحكة
 }
-// 5. States البروفايل
-const [profileUser, setProfileUser] = useState(null) // اليوزر اللي فاتح بروفايله
-const [userPosts, setUserPosts] = useState([]) // منشوراته
-// 6. دالة تفتح البروفايل
 const openProfile = async (userId) => {
 const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single()
 const { data: posts } = await supabase.from('posts').select('*').eq('user_id', userId).order('created_at', {ascending:false})
@@ -115,11 +152,6 @@ setUserPosts(posts || [])
 setCurrentPage('profile') // هنعمل صفحة اسمها profile
 playSound('eyeBlink') // بربش
 }
-// 7. States المجموعات والحماية
-const [groups, setGroups] = useState([])
-const [keyboardLocked, setKeyboardLocked] = useState(false) // قفل الكيبورد
-const [hackerAlert, setHackerAlert] = useState(null) // لو هاكر دخل
-// 8. دالة قفل الكيبورد الملكى
 const toggleKeyboardLock = () => {
 setKeyboardLocked(!keyboardLocked)
 playSound('goldDrop')
@@ -135,13 +167,6 @@ playSound('fail')
 return true // ممنوع يتبعت
 }
 // 10. States التعديل والترجمة والالوان والنار
-const [editingMsgId, setEditingMsgId] = useState(null) // بنعدل رسالة رقم كام
-const [editText, setEditText] = useState('')
-const [textColor, setTextColor] = useState('#FFD700') // لون الكلام دهبى
-const [bgColor, setBgColor] = useState('#000') // لون الخلفية اسود
-const [keyboardColor, setKeyboardColor] = useState('#FFD700') // لون الكيبورد
-const [fireText, setFireText] = useState(false) // الكتابة بالنار شغالة ولا لا
-// 11. دالة التعديل - مبتختفيش ابدا زي ما طلبت
 const startEdit = (msg) => {
 setEditingMsgId(msg.id)
 setEditText(msg.text)
@@ -170,12 +195,6 @@ animation: 'glow 2s ease infinite'
 } : {}
 return false
 }
-// 14. States سجل حلمك 
-const [dreamText, setDreamText] = useState('')
-const [dreamVideoUrl, setDreamVideoUrl] = useState(null)
-const [generatingDream, setGeneratingDream] = useState(false)
-const [dreamPaid, setDreamPaid] = useState(false) // هتبقى true بعد الدفع
-// 15. دالة توليد الحلم بـ Luma
 const generateDreamVideo = async () => {
 if(!dreamPaid){
 alert('اشترك الاول يا ملك ب 5$ عشان نفعل Luma 👑')
@@ -201,10 +220,6 @@ playSound('fail')
 }
 setGeneratingDream(false)
 }
-const [email, setEmail] = useState('')
-const [password, setPassword] = useState('')
-// صفحة انشاء الحساب - فورم الـ 14 خانة
-const [form, setForm] = useState({
 name: '',
 password: '',
 phone: '',
@@ -241,12 +256,6 @@ if(data?.user) setUser(data.user);
 setUser({ email: fakeEmail });
 setCurrentPage('main');
 };
-const [messages, setMessages] = useState([])
-const [input, setInput] = useState('')
-const [badgeStatus, setBadgeStatus] = useState('none')
-const [daysLeft, setDaysLeft] = useState(0)
-// 1. حالة الاشتراك الملكى
-const [subscription, setSubscription] = useState({
 status: 'none',
 plan: null,
 startDate: null,
@@ -279,11 +288,7 @@ alert('انتهت الشارة. التاج اصبح فضى 🥈')
 }
 }
 }, [subscription])
-const [isRecording, setIsRecording] = useState(false)
-const [showPass,setShowPass] = useState(false);
-const [soundsEnabled, setSoundsEnabled] = useState(true)
-const [sounds, setSounds] = useState({
-goldDrop:new Audio('data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA'), // ترنجرجر
+Audio('data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA'), // ترنجرجر
 eyeBlink:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA'), // بربش
 eyeCry:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA'), // عياط واح
 eyeLaugh:new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAIARKwAAESsAAABAAZGF0YQQAAAAA//8AAP//AAD//wAA'), // ضحكة ه
@@ -299,9 +304,6 @@ ringtone: 'https://انسخ_الرابط_بتاعك_هنا.mp3', // رنة ال�
 recording: '', typing: '', send: '', open: '', fail: '', success: '',
 call_icon: '', video_icon: '', ringtone: '', notif_in: '', notif_out: ''
 });
-const [isAdmin, setIsAdmin] = useState(false)
-const [appCode, setAppCode] = useState('<h1>مرحبا</h1>')
-const updateAppCode = (code) => setAppCode(code)
 }
 const c = { bg: '#000', card: '#000', main: '#FFD700', text: '#FFD700' }
 const [showMetal, setShowMetal] = useState(false)
